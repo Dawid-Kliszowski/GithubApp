@@ -1,12 +1,12 @@
 ext.versions = [
         minSdk                   : 23,
         targetSdk                : 27,
-        androidKtx               : "0.2",
+        androidKtx               : "0.3",
         gradlePlugin             : "3.1.2",
         buildTools               : "27.0.3",
         kotlin                   : "1.2.31",
         jUnit                    : "4.12",
-        support                  : "27.1.0",
+        support                  : "27.1.1",
         constraintLayout         : "1.1.0",
         dagger                   : "2.14.1"
 ]
