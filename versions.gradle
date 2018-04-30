@@ -11,5 +11,7 @@ ext.versions = [
         dagger                   : "2.14.1",
         javaxAnnotation          : "10.0-b28",
         retrofit                 : "2.3.0",
-        okHttp                   : "3.10.0"
+        okHttp                   : "3.10.0",
+        rxKotlin                 : "2.2.0",
+        rxAndroid                : "2.0.2"
 ]

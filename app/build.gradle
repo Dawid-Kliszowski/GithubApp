@@ -38,7 +38,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
     implementation "androidx.core:core-ktx:$versions.androidKtx"
 
-    //Dependency Injection
+    // Dependency Injection
     implementation "com.google.dagger:dagger:$versions.dagger"
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
     kaptTest "com.google.dagger:dagger-compiler:$versions.dagger"
@@ -49,4 +49,9 @@ dependencies {
     implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
     implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
     implementation "com.squareup.okhttp3:okhttp:$versions.okHttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$versions.okHttp"
+
+    // RX
+    implementation "io.reactivex.rxjava2:rxkotlin:$versions.rxKotlin"
+    implementation "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid"
 }

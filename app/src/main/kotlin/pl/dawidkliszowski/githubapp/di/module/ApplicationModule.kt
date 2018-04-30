@@ -13,6 +13,8 @@ import pl.dawidkliszowski.githubapp.di.qualifier.AppContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 @Module
 class ApplicationModule(private val application: Application) {
@@ -32,6 +34,7 @@ class ApplicationModule(private val application: Application) {
         return Retrofit.Builder()
                 .client(createOkHttpClient())
                 .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .baseUrl(ApiConstants.BASE_URL)
                 .build()
     }
@@ -41,7 +44,9 @@ class ApplicationModule(private val application: Application) {
     fun provideGithubApiService(retrofit: Retrofit): GithubApiService = retrofit.createService()
 
     private fun createOkHttpClient(): OkHttpClient {
+        val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
+                .addInterceptor(httpLoggingInterceptor)
                 .build()
     }
 }

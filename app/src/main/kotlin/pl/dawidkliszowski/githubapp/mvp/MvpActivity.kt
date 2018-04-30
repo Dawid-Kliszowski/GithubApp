@@ -2,10 +2,11 @@ package pl.dawidkliszowski.githubapp.mvp
 
 import android.os.Bundle
 import pl.dawidkliszowski.githubapp.base.BaseActivity
+import javax.inject.Inject
 
-abstract class MvpActivity<V : MvpView, out P : MvpPresenter<V>> : BaseActivity(), MvpView {
+abstract class MvpActivity<V : MvpView, P : MvpPresenter<V>> : BaseActivity(), MvpView {
 
-    abstract val presenter: P
+    @Inject lateinit var presenter: P
 
     @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,6 +16,7 @@ abstract class MvpActivity<V : MvpView, out P : MvpPresenter<V>> : BaseActivity(
 
     override fun onDestroy() {
         presenter.detachView()
+        presenter.onDestroy()
         super.onDestroy()
     }
 }

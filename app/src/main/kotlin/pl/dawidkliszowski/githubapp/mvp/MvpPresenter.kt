@@ -9,11 +9,16 @@ abstract class MvpPresenter<V : MvpView> {
 
     @CallSuper
     fun attachView(view: V) {
-        //todo implement
+        this.view = view
     }
 
     @CallSuper
     fun detachView() {
-        //todo implement
+        this.view = null
+    }
+
+    open fun onDestroy() {
+        //no-op
+        //prepared to override in particular presenter implementations
     }
 }

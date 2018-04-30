@@ -9,10 +9,7 @@ import android.view.MenuInflater
 
 class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>() {
 
-    override val presenter = SearchUsersPresenter()
     override val layoutResId = R.layout.fragment_search
-
-    private lateinit var usersSearchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,8 +23,24 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         val searchMenuItem = menu.findItem(R.id.actionSearchUsersSearchView)
-        usersSearchView = searchMenuItem.actionView as SearchView
+        val usersSearchView = searchMenuItem.actionView as SearchView
+        setupSearchView(usersSearchView)
+    }
+
+    override fun injectDependencies() {
+        fragmentComponent.inject(this)
+    }
+
+    private fun setupSearchView(usersSearchView: SearchView) {
         usersSearchView.setIconifiedByDefault(false)
         usersSearchView.queryHint = getString(R.string.menu_search_users_hint)
+        usersSearchView.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean =  true
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                presenter.queryTextChanged(newText)
+                return true
+            }
+        })
     }
 }

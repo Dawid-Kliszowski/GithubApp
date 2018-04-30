@@ -1,13 +1,14 @@
 package pl.dawidkliszowski.githubapp.screens
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import pl.dawidkliszowski.githubapp.R
+import pl.dawidkliszowski.githubapp.base.BaseActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+    override val layoutResId = R.layout.activity_main
+
+    override fun injectDependencies() {
+        //no-op
+        //nothing to inject
     }
 }

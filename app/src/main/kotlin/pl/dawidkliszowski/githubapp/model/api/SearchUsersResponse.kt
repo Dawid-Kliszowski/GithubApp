@@ -2,13 +2,13 @@ package pl.dawidkliszowski.githubapp.model.api
 
 import com.google.gson.annotations.SerializedName
 
-data class SearchUserResponse(
+data class SearchUsersResponse(
         @SerializedName("total_count") val totalCount: Int,
         @SerializedName("incomplete_results") val incompleteResults: Boolean,
-        @SerializedName("items") val users: List<SearchUserItem>
+        @SerializedName("items") val users: List<SearchUsersItem>
 )
 
-data class SearchUserItem(
+data class SearchUsersItem(
         @SerializedName("login") val login: String,
         @SerializedName("id") val id: Long,
         @SerializedName("avatar_url") val avatarUrl: String,
