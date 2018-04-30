@@ -1,9 +1,9 @@
 package pl.dawidkliszowski.githubapp.mvp
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import pl.dawidkliszowski.githubapp.base.BaseActivity
 
-abstract class MvpActivity<V : MvpView, out P : MvpPresenter<V>> : AppCompatActivity(), MvpView {
+abstract class MvpActivity<V : MvpView, out P : MvpPresenter<V>> : BaseActivity(), MvpView {
 
     abstract val presenter: P
 

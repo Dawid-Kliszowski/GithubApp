@@ -8,5 +8,6 @@ ext.versions = [
         jUnit                    : "4.12",
         support                  : "27.1.1",
         constraintLayout         : "1.1.0",
-        dagger                   : "2.14.1"
+        dagger                   : "2.14.1",
+        javaxAnnotation          : "10.0-b28"
 ]
