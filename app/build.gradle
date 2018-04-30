@@ -43,4 +43,10 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$versions.dagger"
     kaptTest "com.google.dagger:dagger-compiler:$versions.dagger"
     compileOnly "org.glassfish:javax.annotation:$versions.javaxAnnotation"
+
+    // REST
+    implementation "com.squareup.retrofit2:retrofit:$versions.retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+    implementation "com.squareup.okhttp3:okhttp:$versions.okHttp"
 }
