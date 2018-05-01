@@ -21,4 +21,8 @@ abstract class MvpPresenter<V : MvpView> {
         //no-op
         //prepared to override in particular presenter implementations
     }
+
+    fun getView(): V {
+        return view?.let { it } ?: nullView
+    }
 }

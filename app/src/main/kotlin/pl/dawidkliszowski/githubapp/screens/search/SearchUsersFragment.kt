@@ -1,15 +1,23 @@
 package pl.dawidkliszowski.githubapp.screens.search
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.support.annotation.LayoutRes
 import android.view.Menu
 import pl.dawidkliszowski.githubapp.R
 import pl.dawidkliszowski.githubapp.mvp.MvpFragment
 import android.support.v7.widget.SearchView
 import android.view.MenuInflater
+import android.view.View.*
+import kotlinx.android.synthetic.main.fragment_search.*
+import pl.dawidkliszowski.githubapp.utils.showToast
 
-class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>() {
+class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>(), SearchUsersView {
 
-    override val layoutResId = R.layout.fragment_search
+    @LayoutRes override val layoutResId = R.layout.fragment_search
+
+    private val uiHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,5 +50,23 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
                 return true
             }
         })
+    }
+
+    private fun runOnUiThread(toRun: () -> Unit) {
+        uiHandler.post { toRun() }
+    }
+
+    // SearchUsersView interface
+
+    override fun showError(message: String) {
+        runOnUiThread { context?.showToast(message) }
+    }
+
+    override fun showProgress() {
+        runOnUiThread { contentLoadingProgressBar.visibility = VISIBLE }
+    }
+
+    override fun hideProgress() {
+        runOnUiThread { contentLoadingProgressBar.visibility = GONE }
     }
 }

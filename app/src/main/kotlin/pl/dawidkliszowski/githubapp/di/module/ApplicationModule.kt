@@ -2,6 +2,7 @@ package pl.dawidkliszowski.githubapp.di.module
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -49,6 +50,9 @@ class ApplicationModule(private val application: Application) {
                 .addInterceptor(httpLoggingInterceptor)
                 .build()
     }
+
+    @Provides
+    fun provideResources(@AppContext context: Context): Resources = context.resources
 }
 
 private inline fun <reified T> Retrofit.createService() = create(T::class.java)
