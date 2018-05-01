@@ -15,5 +15,6 @@ ext.versions = [
         rxKotlin                 : "2.2.0",
         rxAndroid                : "2.0.2",
         mockitoCore              : "2.15.0",
-        mockitoKotlin            : "1.5.0"
+        mockitoKotlin            : "1.5.0",
+        circleImageView          : "2.2.0",
 ]

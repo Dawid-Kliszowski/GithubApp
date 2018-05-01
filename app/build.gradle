@@ -31,11 +31,7 @@ androidExtensions {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:appcompat-v7:$versions.support"
-    implementation "com.android.support.constraint:constraint-layout:$versions.constraintLayout"
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
-    implementation "androidx.core:core-ktx:$versions.androidKtx"
 
     // Test
     testImplementation "junit:junit:$versions.jUnit"
@@ -58,4 +54,14 @@ dependencies {
     // RX
     implementation "io.reactivex.rxjava2:rxkotlin:$versions.rxKotlin"
     implementation "io.reactivex.rxjava2:rxandroid:$versions.rxAndroid"
+
+    // Support
+    implementation "com.android.support:appcompat-v7:$versions.support"
+    implementation "com.android.support:recyclerview-v7:$versions.support"
+    implementation "com.android.support:cardview-v7:$versions.support"
+
+    // Other
+    implementation "com.android.support.constraint:constraint-layout:$versions.constraintLayout"
+    implementation "androidx.core:core-ktx:$versions.androidKtx"
+    implementation "de.hdodenhof:circleimageview:$versions.circleImageView"
 }

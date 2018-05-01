@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="recycler_view_item_margin_half">4dp</dimen>
+    <dimen name="recycler_View_item_margin">8dp</dimen>
+    <dimen name="content_padding_small">8dp</dimen>
+    <dimen name="avatar_size_small">50dp</dimen>
+
+    <dimen name="text_size_medium">15sp</dimen>
+    <dimen name="text_size_large">17sp</dimen>
+</resources>
