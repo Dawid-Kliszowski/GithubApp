@@ -10,6 +10,7 @@ import pl.dawidkliszowski.githubapp.R
 import pl.dawidkliszowski.githubapp.api.GithubApiService
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.SearchUsersResponseMapper
+import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
 import pl.dawidkliszowski.githubapp.utils.StringProvider
 import java.io.IOException
@@ -21,6 +22,7 @@ private const val SEARCH_QUERY_DEBOUNCE_MILLIS = 1000L
 class SearchUsersPresenter @Inject constructor(
         private val githubApiService: GithubApiService,
         private val searchUsersResponseMapper: SearchUsersResponseMapper,
+        private val usersUiItemsMapper: UsersUiItemsMapper,
         private val stringProvider: StringProvider
 ) : MvpPresenter<SearchUsersView>() {
 
@@ -38,7 +40,8 @@ class SearchUsersPresenter @Inject constructor(
     }
 
     private fun onSearchResult(foundUsers: List<GithubUser>) {
-        //todo implement
+        val uiItems = usersUiItemsMapper.mapToUiItems(foundUsers)
+        getView().showUsers(uiItems)
     }
 
     private fun onError(throwable: Throwable) {
@@ -51,6 +54,7 @@ class SearchUsersPresenter @Inject constructor(
     private fun subscribeToSearchSubject(): Disposable {
         return searchQuerySubject
                 .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
+                .filter { it.isNotBlank() }
                 .distinctUntilChanged()
                 .switchMapSingle { query ->
                     githubApiService.getUsers(query)

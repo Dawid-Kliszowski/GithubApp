@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -53,6 +54,9 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     fun provideResources(@AppContext context: Context): Resources = context.resources
+
+    @Provides
+    fun providePicasso(@AppContext context: Context): Picasso = Picasso.with(context)
 }
 
 private inline fun <reified T> Retrofit.createService() = create(T::class.java)

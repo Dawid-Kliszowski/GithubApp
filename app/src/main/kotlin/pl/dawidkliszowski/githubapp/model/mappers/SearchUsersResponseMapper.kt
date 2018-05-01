@@ -10,8 +10,11 @@ class SearchUsersResponseMapper @Inject constructor() {
         return searchUsersResponse.users
                 .map { searchUserItem ->
                     with (searchUserItem) {
-                        GithubUser(login, avatarUrl, score)
+                        val nonBlankOrNullAvatarUrl = getNonBlankOrNull(avatarUrl)
+                        GithubUser(id, login, nonBlankOrNullAvatarUrl, score)
                     }
                 }
     }
+
+    private fun getNonBlankOrNull(text: String) = if (text.isNotBlank()) text else null
 }

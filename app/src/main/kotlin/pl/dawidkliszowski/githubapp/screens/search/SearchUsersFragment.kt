@@ -4,18 +4,24 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.annotation.LayoutRes
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import pl.dawidkliszowski.githubapp.R
 import pl.dawidkliszowski.githubapp.mvp.MvpFragment
 import android.support.v7.widget.SearchView
 import android.view.MenuInflater
+import android.view.View
 import android.view.View.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
 import pl.dawidkliszowski.githubapp.utils.showToast
+import javax.inject.Inject
 
 class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>(), SearchUsersView {
 
     @LayoutRes override val layoutResId = R.layout.fragment_search
+
+    @Inject lateinit var usersAdapter: UsersAdapter
 
     private val uiHandler = Handler(Looper.getMainLooper())
 
@@ -35,6 +41,11 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
         setupSearchView(usersSearchView)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupRecyclerView()
+    }
+
     override fun injectDependencies() {
         fragmentComponent.inject(this)
     }
@@ -50,6 +61,13 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
                 return true
             }
         })
+    }
+
+    private fun setupRecyclerView() {
+        usersRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = usersAdapter
+        }
     }
 
     private fun runOnUiThread(toRun: () -> Unit) {
@@ -68,5 +86,17 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
 
     override fun hideProgress() {
         runOnUiThread { contentLoadingProgressBar.visibility = GONE }
+    }
+
+    override fun showUsers(users: List<UserUiItem>) {
+        runOnUiThread { usersAdapter.userItems = users }
+    }
+
+    override fun showEmptyPlaceholder() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun hideEmptyPlaceholder() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

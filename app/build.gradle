@@ -64,4 +64,5 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$versions.constraintLayout"
     implementation "androidx.core:core-ktx:$versions.androidKtx"
     implementation "de.hdodenhof:circleimageview:$versions.circleImageView"
+    implementation "com.squareup.picasso:picasso:$versions.picasso"
 }
