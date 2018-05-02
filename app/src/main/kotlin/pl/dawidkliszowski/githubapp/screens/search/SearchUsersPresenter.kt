@@ -56,24 +56,22 @@ class SearchUsersPresenter @Inject constructor(
                 .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
                 .filter { it.isNotBlank() }
                 .distinctUntilChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { getView().showProgress() }
                 .switchMapSingle { query ->
                     githubApiService.getUsers(query)
-                            .showProgressWhileSubscribed()
+                            .subscribeOn(Schedulers.io())
                 }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnEach { getView().hideProgress() }
                 .map(searchUsersResponseMapper::mapApiResponseToDomainUsers)
                 .doOnError(::onError)
                 .retry { throwable ->
                     throwable.isNetworkException //otherwise it will crash the app
                 }
-                .subscribeOn(Schedulers.io())
                 .subscribeBy(
                         onNext = ::onSearchResult
                 )
-    }
-
-    private fun <T> Single<T>.showProgressWhileSubscribed(): Single<T> {
-        return this.doOnSubscribe { getView().showProgress() }
-                .doFinally { getView().hideProgress() }
     }
 
     private val Throwable.isNetworkException

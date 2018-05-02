@@ -1,8 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.search
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -22,8 +20,6 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
     @LayoutRes override val layoutResId = R.layout.fragment_search
 
     @Inject lateinit var usersAdapter: UsersAdapter
-
-    private val uiHandler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,26 +66,22 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
         }
     }
 
-    private fun runOnUiThread(toRun: () -> Unit) {
-        uiHandler.post { toRun() }
-    }
-
     // SearchUsersView interface
 
     override fun showError(message: String) {
-        runOnUiThread { context?.showToast(message) }
+        context?.showToast(message)
     }
 
     override fun showProgress() {
-        runOnUiThread { contentLoadingProgressBar.visibility = VISIBLE }
+        contentLoadingProgressBar.visibility = VISIBLE
     }
 
     override fun hideProgress() {
-        runOnUiThread { contentLoadingProgressBar.visibility = GONE }
+        contentLoadingProgressBar.visibility = GONE
     }
 
     override fun showUsers(users: List<UserUiItem>) {
-        runOnUiThread { usersAdapter.userItems = users }
+        usersAdapter.userItems = users
     }
 
     override fun showEmptyPlaceholder() {

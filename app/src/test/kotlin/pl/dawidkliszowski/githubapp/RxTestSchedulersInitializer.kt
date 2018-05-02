@@ -6,11 +6,11 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.schedulers.TestScheduler
 import org.junit.rules.ExternalResource
 
-class RxSchedulersOverrideRule : ExternalResource() {
+class RxTestSchedulersInitializer {
 
     val testScheduler = TestScheduler()
 
-    override fun before() {
+    fun initTestSchedulers() {
         RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
         RxJavaPlugins.setIoSchedulerHandler { testScheduler }
         RxJavaPlugins.setNewThreadSchedulerHandler { testScheduler }
@@ -19,7 +19,7 @@ class RxSchedulersOverrideRule : ExternalResource() {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
-    override fun after() {
+    fun reset() {
         RxJavaPlugins.reset()
         RxAndroidPlugins.reset()
     }
