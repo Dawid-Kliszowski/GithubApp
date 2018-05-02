@@ -10,7 +10,7 @@
     android:layout_marginTop="@dimen/recycler_view_item_margin_half"
     android:layout_marginEnd="@dimen/recycler_View_item_margin"
     android:layout_marginBottom="@dimen/recycler_view_item_margin_half"
-    >
+    android:foreground="?android:selectableItemBackground" >
     
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -38,7 +38,6 @@
             android:id="@+id/usernameTextView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/gray_dark"
             android:layout_marginStart="@dimen/content_padding_small"
             android:textStyle="bold"
             android:textSize="@dimen/text_size_large"
@@ -52,7 +51,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray_medium"
-            android:textStyle="bold"
             android:textSize="@dimen/text_size_small"
             app:layout_constraintStart_toStartOf="@id/usernameTextView"
             app:layout_constraintTop_toBottomOf="@id/usernameTextView"

@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme"
         android:name=".GithubApplication">
 
-        <activity android:name=".screens.MainActivity">
+        <activity android:name=".screens.MainActivity"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

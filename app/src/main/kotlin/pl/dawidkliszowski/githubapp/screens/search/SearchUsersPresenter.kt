@@ -25,9 +25,14 @@ class SearchUsersPresenter @Inject constructor(
 
     private val searchQuerySubject = PublishSubject.create<String>()
     private val searchQueryDisposable = subscribeToSearchSubject()
+    private var searchResults = listOf<GithubUser>()
 
     fun queryTextChanged(query: String) {
         searchQuerySubject.onNext(query)
+    }
+
+    fun userSelected(id: Long) {
+        //todo implement navigation
     }
 
     override fun onDestroy() {
@@ -35,8 +40,17 @@ class SearchUsersPresenter @Inject constructor(
     }
 
     private fun onSearchResult(foundUsers: List<GithubUser>) {
-        val uiItems = usersUiItemsMapper.mapToUiItems(foundUsers)
+        searchResults = foundUsers
+        showSearchResults()
+    }
+
+    private fun showSearchResults() {
+        val uiItems = usersUiItemsMapper.mapToUiItems(searchResults)
         getView().showUsers(uiItems)
+
+        if (uiItems.isEmpty()) {
+            getView().showEmptyPlaceholder()
+        }
     }
 
     private fun showErrorMessage(message: String) {
@@ -47,7 +61,7 @@ class SearchUsersPresenter @Inject constructor(
         return searchQuerySubject
                 .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
-                .showProgress()
+                .showProgressAndHideEmptyPlaceholder()
                 .switchMapSingle { query ->
                     usersRepository.searchUsers(query)
                 }
@@ -58,9 +72,14 @@ class SearchUsersPresenter @Inject constructor(
                 )
     }
 
-    private fun <T> Observable<T>.showProgress(): Observable<T> {
+    private fun <T> Observable<T>.showProgressAndHideEmptyPlaceholder(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { getView().showProgress() }
+                .doOnNext {
+                    getView().run {
+                        hideEmptyPlaceholder()
+                        showProgress()
+                    }
+                }
     }
 
     private fun <T> Observable<T>.hideProgress(): Observable<T> {

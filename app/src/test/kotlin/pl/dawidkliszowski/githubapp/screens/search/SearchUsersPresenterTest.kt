@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import pl.dawidkliszowski.githubapp.RxTestSchedulersInitializer
 import pl.dawidkliszowski.githubapp.data.RemoteRepositoryUnavailableException
 import pl.dawidkliszowski.githubapp.data.UsersRepository
+import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
@@ -47,6 +48,12 @@ class SearchUsersPresenterTest {
     @InjectMocks lateinit var errorHandler: ErrorHandler
 
     lateinit var searchUsersPresenter: SearchUsersPresenter
+
+    private val nonEmptySearchUsersResult = listOf(
+            GithubUser(id = 0, login = "aaa", avatarUrl = null, score = 0.1),
+            GithubUser(id = 1, login = "bbb", avatarUrl = null, score = 0.2),
+            GithubUser(id = 2, login = "ccc", avatarUrl = null, score = 0.3)
+    )
 
     @Before
     fun setUp() {
@@ -98,13 +105,43 @@ class SearchUsersPresenterTest {
     }
 
     @Test
-    fun `show error message after non fatal error when fetching users`() {
+    fun `shows error message after non fatal error when fetching users`() {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchUsersPresenter.queryTextChanged("abc")
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showError(any())
+    }
+
+    @Test
+    fun `hides empty placeholder when start searching users`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(emptyList()))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock).hideEmptyPlaceholder()
+    }
+
+    @Test
+    fun `shows empty placeholder on empty result when fetching users`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(emptyList()))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock).showEmptyPlaceholder()
+    }
+
+    @Test
+    fun `not shows empty placeholder on non-empty result when fetching users`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(nonEmptySearchUsersResult))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock, never()).showEmptyPlaceholder()
     }
 
     private fun advanceTime(timeMillis: Long) {

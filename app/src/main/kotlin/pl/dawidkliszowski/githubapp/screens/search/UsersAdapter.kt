@@ -22,6 +22,8 @@ class UsersAdapter @Inject constructor(
             notifyDataSetChanged()
         }
 
+    var onUserItemClickListener: ((Long) -> Unit)? = null
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
         val view = LayoutInflater
                 .from(parent.context)
@@ -32,7 +34,7 @@ class UsersAdapter @Inject constructor(
     override fun getItemCount(): Int = userItems.size
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
-        holder.bindView(userItems[position], picasso)
+        holder.bindView(userItems[position], picasso, onUserItemClickListener)
     }
 }
 
@@ -42,12 +44,16 @@ class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val usernameTextView: TextView = itemView.usernameTextView
     private val ratingTextView: TextView = itemView.ratingTextView
 
-    fun bindView(userItem: UserUiItem, picasso: Picasso) {
+    fun bindView(userItem: UserUiItem, picasso: Picasso, onUserItemClickListener: ((Long) -> Unit)?) {
         picasso.load(userItem.avatarUrl)
                 .placeholder(R.drawable.user_avatar_placeholder)
                 .into(avatarImageView)
 
         usernameTextView.text = userItem.login
         ratingTextView.text = userItem.score
+
+        itemView.setOnClickListener {
+            onUserItemClickListener?.invoke(userItem.id)
+        }
     }
 }

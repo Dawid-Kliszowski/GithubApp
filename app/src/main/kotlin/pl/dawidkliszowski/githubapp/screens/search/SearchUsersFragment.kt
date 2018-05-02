@@ -24,6 +24,12 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        setupAdapter()
+    }
+
+    override fun onDestroy() {
+        usersAdapter.onUserItemClickListener = null
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -47,16 +53,18 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
     }
 
     private fun setupSearchView(usersSearchView: SearchView) {
-        usersSearchView.setIconifiedByDefault(false)
-        usersSearchView.queryHint = getString(R.string.menu_search_users_hint)
-        usersSearchView.setOnQueryTextListener( object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean =  true
+        usersSearchView.apply {
+            setIconifiedByDefault(false)
+            queryHint = getString(R.string.menu_search_users_hint)
+            setOnQueryTextListener( object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean =  true
 
-            override fun onQueryTextChange(newText: String): Boolean {
-                presenter.queryTextChanged(newText)
-                return true
-            }
-        })
+                override fun onQueryTextChange(newText: String): Boolean {
+                    presenter.queryTextChanged(newText)
+                    return true
+                }
+            })
+        }
     }
 
     private fun setupRecyclerView() {
@@ -64,6 +72,10 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
             layoutManager = LinearLayoutManager(context)
             adapter = usersAdapter
         }
+    }
+
+    private fun setupAdapter() {
+        usersAdapter.onUserItemClickListener = presenter::userSelected
     }
 
     // SearchUsersView interface
@@ -85,10 +97,10 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>()
     }
 
     override fun showEmptyPlaceholder() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        emptyPlaceholderTextView.visibility = VISIBLE
     }
 
     override fun hideEmptyPlaceholder() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        emptyPlaceholderTextView.visibility = INVISIBLE
     }
 }
