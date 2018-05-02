@@ -1,4 +1,4 @@
-package pl.dawidkliszowski.githubapp.screens
+package pl.dawidkliszowski.githubapp.screens.main
 
 import android.support.annotation.LayoutRes
 import pl.dawidkliszowski.githubapp.R

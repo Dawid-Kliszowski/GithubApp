@@ -1,4 +1,4 @@
-package pl.dawidkliszowski.githubapp.screens.search
+package pl.dawidkliszowski.githubapp.screens.main.search
 
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.never
@@ -42,6 +42,7 @@ class SearchUsersPresenterTest {
     }
 
     @Mock lateinit var viewMock: SearchUsersView
+    @Mock lateinit var navigatorMock: SearchUsersNavigator
     @Mock lateinit var usersRepositoryMock: UsersRepository
     @Mock lateinit var stringProvider: StringProvider
     @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
@@ -49,11 +50,12 @@ class SearchUsersPresenterTest {
 
     lateinit var searchUsersPresenter: SearchUsersPresenter
 
-    private val nonEmptySearchUsersResult = listOf(
+    private val testSearchUsersResult = listOf(
             GithubUser(id = 0, login = "aaa", avatarUrl = null, score = 0.1),
             GithubUser(id = 1, login = "bbb", avatarUrl = null, score = 0.2),
             GithubUser(id = 2, login = "ccc", avatarUrl = null, score = 0.3)
     )
+    private val testQuery = "abc"
 
     @Before
     fun setUp() {
@@ -63,12 +65,14 @@ class SearchUsersPresenterTest {
                 errorHandler
         )
         whenever(stringProvider.getString(any())).thenReturn("")
+        searchUsersPresenter.attachNavigator(navigatorMock)
         searchUsersPresenter.attachView(viewMock)
     }
 
     @After
     fun finish() {
         searchUsersPresenter.detachView()
+        searchUsersPresenter.detachNavigator()
         searchUsersPresenter.onDestroy()
     }
 
@@ -77,7 +81,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
 
         verify(viewMock, never()).showProgress()
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
@@ -89,7 +93,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideProgress()
     }
@@ -99,7 +103,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideProgress()
     }
@@ -109,7 +113,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showError(any())
     }
@@ -119,7 +123,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideEmptyPlaceholder()
     }
@@ -129,7 +133,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showEmptyPlaceholder()
     }
@@ -137,11 +141,22 @@ class SearchUsersPresenterTest {
     @Test
     fun `not shows empty placeholder on non-empty result when fetching users`() {
         whenever(usersRepositoryMock.searchUsers(any()))
-                .thenReturn(Single.just(nonEmptySearchUsersResult))
+                .thenReturn(Single.just(testSearchUsersResult))
 
-        searchUsersPresenter.queryTextChanged("abc")
+        searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock, never()).showEmptyPlaceholder()
+    }
+
+    @Test
+    fun `navigates to proper user details when selected item`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(testSearchUsersResult))
+
+        searchUsersPresenter.queryTextChanged(testQuery)
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        searchUsersPresenter.userSelected(testSearchUsersResult[0].id)
+        verify(navigatorMock).goToUserDetailsScreen(testSearchUsersResult[0])
     }
 
     private fun advanceTime(timeMillis: Long) {

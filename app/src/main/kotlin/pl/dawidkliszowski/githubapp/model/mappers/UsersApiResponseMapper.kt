@@ -4,7 +4,7 @@ import pl.dawidkliszowski.githubapp.model.api.SearchUsersResponse
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import javax.inject.Inject
 
-class SearchUsersResponseMapper @Inject constructor() {
+class UsersApiResponseMapper @Inject constructor() {
 
     fun mapApiResponseToDomainUsers(searchUsersResponse: SearchUsersResponse): List<GithubUser> {
         return searchUsersResponse.users

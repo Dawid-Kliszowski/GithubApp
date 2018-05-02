@@ -1,20 +1,25 @@
 package pl.dawidkliszowski.githubapp.mvp
 
-import android.support.annotation.CallSuper
-
-abstract class MvpPresenter<V : MvpView> {
+abstract class MvpPresenter<V : MvpView, N : MvpNavigator> {
 
     protected abstract val nullView: V
     private var view: V? = null
+    private var navigator: N? = null
 
-    @CallSuper
     fun attachView(view: V) {
         this.view = view
     }
 
-    @CallSuper
     fun detachView() {
         this.view = null
+    }
+
+    fun attachNavigator(navigator: N) {
+        this.navigator = navigator
+    }
+
+    fun detachNavigator() {
+        this.navigator = null
     }
 
     open fun onDestroy() {
@@ -24,5 +29,9 @@ abstract class MvpPresenter<V : MvpView> {
 
     fun getView(): V {
         return view?.let { it } ?: nullView
+    }
+
+    fun performNavigation(navigationAction: N.() -> Unit) {
+        navigator?.let { navigationAction(it) }
     }
 }

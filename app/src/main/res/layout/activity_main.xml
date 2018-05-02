@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pl.dawidkliszowski.githubapp.screens.MainActivity">
+    tools:context="pl.dawidkliszowski.githubapp.screens.main.MainActivity">
 
     <fragment
         android:id="@+id/searchFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="pl.dawidkliszowski.githubapp.screens.search.SearchUsersFragment"/>
+        android:name="pl.dawidkliszowski.githubapp.screens.main.search.SearchUsersFragment"/>
 
 </FrameLayout>

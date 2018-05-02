@@ -1,4 +1,4 @@
-package pl.dawidkliszowski.githubapp.screens.search
+package pl.dawidkliszowski.githubapp.screens.main.search
 
 import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
 

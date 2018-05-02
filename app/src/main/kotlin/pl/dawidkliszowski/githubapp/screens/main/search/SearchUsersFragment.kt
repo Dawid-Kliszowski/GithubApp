@@ -1,4 +1,4 @@
-package pl.dawidkliszowski.githubapp.screens.search
+package pl.dawidkliszowski.githubapp.screens.main.search
 
 import android.os.Bundle
 import android.support.annotation.LayoutRes
@@ -15,7 +15,7 @@ import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
 import pl.dawidkliszowski.githubapp.utils.showToast
 import javax.inject.Inject
 
-class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersPresenter>(), SearchUsersView {
+class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, SearchUsersPresenter>(), SearchUsersView {
 
     @LayoutRes override val layoutResId = R.layout.fragment_search
 

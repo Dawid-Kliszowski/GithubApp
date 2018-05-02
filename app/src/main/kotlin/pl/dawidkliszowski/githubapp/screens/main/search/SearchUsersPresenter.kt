@@ -1,4 +1,4 @@
-package pl.dawidkliszowski.githubapp.screens.search
+package pl.dawidkliszowski.githubapp.screens.main.search
 
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,7 +19,7 @@ class SearchUsersPresenter @Inject constructor(
         private val usersRepository: UsersRepository,
         private val usersUiItemsMapper: UsersUiItemsMapper,
         private val errorHandler: ErrorHandler
-) : MvpPresenter<SearchUsersView>() {
+) : MvpPresenter<SearchUsersView, SearchUsersNavigator>() {
 
     override val nullView = SearchUsersNullView
 
@@ -32,7 +32,8 @@ class SearchUsersPresenter @Inject constructor(
     }
 
     fun userSelected(id: Long) {
-        //todo implement navigation
+        val selectedUser = searchResults.find { it.id == id }
+        performNavigation { goToUserDetailsScreen(selectedUser!!) } //Should never be null
     }
 
     override fun onDestroy() {
