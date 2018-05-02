@@ -1,6 +1,7 @@
 package pl.dawidkliszowski.githubapp.screens.search
 
 import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.never
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Single
@@ -11,6 +12,7 @@ import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import pl.dawidkliszowski.githubapp.RxTestSchedulersInitializer
+import pl.dawidkliszowski.githubapp.data.RemoteRepositoryUnavailableException
 import pl.dawidkliszowski.githubapp.data.UsersRepository
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
@@ -53,6 +55,7 @@ class SearchUsersPresenterTest {
                 usersUiItemsMapper,
                 errorHandler
         )
+        whenever(stringProvider.getString(any())).thenReturn("")
         searchUsersPresenter.attachView(viewMock)
     }
 
@@ -69,8 +72,39 @@ class SearchUsersPresenterTest {
 
         searchUsersPresenter.queryTextChanged("abc")
 
+        verify(viewMock, never()).showProgress()
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showProgress()
+    }
+
+    @Test
+    fun `hides progress after users fetched with success`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(emptyList()))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock).hideProgress()
+    }
+
+    @Test
+    fun `hides progress after non fatal error when fetching users`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock).hideProgress()
+    }
+
+    @Test
+    fun `show error message after non fatal error when fetching users`() {
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+
+        searchUsersPresenter.queryTextChanged("abc")
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        verify(viewMock).showError(any())
     }
 
     private fun advanceTime(timeMillis: Long) {

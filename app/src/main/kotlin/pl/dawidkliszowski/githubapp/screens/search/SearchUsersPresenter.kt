@@ -65,7 +65,7 @@ class SearchUsersPresenter @Inject constructor(
 
     private fun <T> Observable<T>.hideProgress(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { getView().hideProgress() }
+                .doOnEach { getView().hideProgress() }
     }
 
     private fun <T> Observable<T>.handleErrors(): Observable<T> {
