@@ -1,6 +1,8 @@
 package pl.dawidkliszowski.githubapp.screens.search
 
-import com.nhaarman.mockito_kotlin.*
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Single
 import org.junit.*
 import org.junit.runner.RunWith
@@ -9,10 +11,9 @@ import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import pl.dawidkliszowski.githubapp.RxTestSchedulersInitializer
-import pl.dawidkliszowski.githubapp.api.GithubApiService
-import pl.dawidkliszowski.githubapp.model.api.SearchUsersResponse
-import pl.dawidkliszowski.githubapp.model.mappers.SearchUsersResponseMapper
+import pl.dawidkliszowski.githubapp.data.UsersRepository
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
+import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
 import java.util.concurrent.TimeUnit
 
@@ -37,16 +38,21 @@ class SearchUsersPresenterTest {
         }
     }
 
-    @Spy lateinit var searchUsersResponseMapper: SearchUsersResponseMapper
-    @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
     @Mock lateinit var viewMock: SearchUsersView
-    @Mock lateinit var githubApiServiceMock: GithubApiService
-    @Mock lateinit var stringProviderMock: StringProvider
+    @Mock lateinit var usersRepositoryMock: UsersRepository
+    @Mock lateinit var stringProvider: StringProvider
+    @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
+    @InjectMocks lateinit var errorHandler: ErrorHandler
 
-    @InjectMocks lateinit var searchUsersPresenter: SearchUsersPresenter
+    lateinit var searchUsersPresenter: SearchUsersPresenter
 
     @Before
     fun setUp() {
+        searchUsersPresenter = SearchUsersPresenter(
+                usersRepositoryMock,
+                usersUiItemsMapper,
+                errorHandler
+        )
         searchUsersPresenter.attachView(viewMock)
     }
 
@@ -58,9 +64,8 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `shows progress after one second debounce`() {
-        val emptyApiUsersResponse = SearchUsersResponse(0, true, emptyList())
-        whenever(githubApiServiceMock.getUsers(any()))
-                .thenReturn(Single.just(emptyApiUsersResponse))
+        whenever(usersRepositoryMock.searchUsers(any()))
+                .thenReturn(Single.just(emptyList()))
 
         searchUsersPresenter.queryTextChanged("abc")
 
