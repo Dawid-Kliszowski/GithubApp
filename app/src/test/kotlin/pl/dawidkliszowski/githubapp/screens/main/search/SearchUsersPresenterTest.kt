@@ -78,39 +78,39 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `shows progress after one second debounce`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
 
-        verify(viewMock, never()).showProgress()
+        verify(viewMock, never()).showMainProgress()
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        verify(viewMock).showProgress()
+        verify(viewMock).showMainProgress()
     }
 
     @Test
     fun `hides progress after users fetched with success`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        verify(viewMock).hideProgress()
+        verify(viewMock).hideMainProgress()
     }
 
     @Test
     fun `hides progress after non fatal error when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        verify(viewMock).hideProgress()
+        verify(viewMock).hideMainProgress()
     }
 
     @Test
     fun `shows error message after non fatal error when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
@@ -120,7 +120,7 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `hides empty placeholder when start searching users`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
@@ -130,7 +130,7 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `shows empty placeholder on empty result when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchUsersPresenter.queryTextChanged(testQuery)
@@ -140,7 +140,7 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `not shows empty placeholder on non-empty result when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
 
         searchUsersPresenter.queryTextChanged(testQuery)
@@ -150,13 +150,25 @@ class SearchUsersPresenterTest {
 
     @Test
     fun `navigates to proper user details when selected item`() {
-        whenever(usersRepositoryMock.searchUsers(any()))
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
 
         searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         searchUsersPresenter.userSelected(testSearchUsersResult[0].id)
         verify(navigatorMock).goToUserDetailsScreen(testSearchUsersResult[0])
+    }
+
+    @Test
+    fun `shows and hides paginate progress when paginating`() {
+        whenever(usersRepositoryMock.searchUsers(any(), any()))
+                .thenReturn(Single.just(emptyList()))
+
+        searchUsersPresenter.queryTextChanged(testQuery)
+        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        searchUsersPresenter.nextPageRequest()
+        verify(viewMock).showPaginateProgress()
+        verify(viewMock).hidePaginateProgress()
     }
 
     private fun advanceTime(timeMillis: Long) {

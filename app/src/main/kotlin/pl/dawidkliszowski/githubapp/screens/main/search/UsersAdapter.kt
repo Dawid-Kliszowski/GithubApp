@@ -23,6 +23,7 @@ class UsersAdapter @Inject constructor(
         }
 
     var onUserItemClickListener: ((Long) -> Unit)? = null
+    var onPaginateListener: (() -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
         val view = LayoutInflater
@@ -35,6 +36,14 @@ class UsersAdapter @Inject constructor(
 
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
         holder.bindView(userItems[position], picasso, onUserItemClickListener)
+    }
+
+    fun showPaginateProgress() {
+        //todo implement
+    }
+
+    fun hidePaginateProgress() {
+        //todo implement
     }
 }
 

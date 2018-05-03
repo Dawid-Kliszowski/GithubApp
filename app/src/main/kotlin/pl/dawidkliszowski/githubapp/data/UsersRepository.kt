@@ -8,19 +8,22 @@ import pl.dawidkliszowski.githubapp.model.mappers.UsersApiResponseMapper
 import java.io.IOException
 import javax.inject.Inject
 
+private const val USERS_REQUEST_ITEMS_PER_PAGE = 30
+
 class UsersRepository @Inject constructor(
         private val githubApiService: GithubApiService,
         private val usersApiResponseMapper: UsersApiResponseMapper
 ) {
 
-    fun searchUsers(query: String): Single<List<GithubUser>> {
-        return if (query.isNotBlank()) {
-            githubApiService.getUsers(query)
+    fun searchUsers(query: String, fromItem: Int): Single<List<GithubUser>> {
+        return if (query.isBlank() || !canLoadNextPage(fromItem)) {
+            Single.just(emptyList())
+        } else {
+            val page = calculateNextPage(fromItem)
+            githubApiService.getUsers(query, page, USERS_REQUEST_ITEMS_PER_PAGE)
                     .map(usersApiResponseMapper::mapApiResponseToDomainUsers)
                     .onErrorResumeNext { throwCustomException(it) }
                     .subscribeOn(Schedulers.io())
-        } else {
-            Single.just(emptyList())
         }
     }
 
@@ -34,4 +37,13 @@ class UsersRepository @Inject constructor(
 
     private val Throwable.isNetworkException
         get() = this is IOException
+
+
+    private fun canLoadNextPage(fromItem: Int): Boolean {
+        return (fromItem % USERS_REQUEST_ITEMS_PER_PAGE) == 0
+    }
+
+    private fun calculateNextPage(fromItem: Int): Int {
+        return fromItem / USERS_REQUEST_ITEMS_PER_PAGE
+    }
 }

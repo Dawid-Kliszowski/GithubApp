@@ -2,7 +2,9 @@ package pl.dawidkliszowski.githubapp.screens.main.search
 
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import pl.dawidkliszowski.githubapp.data.UsersRepository
@@ -24,11 +26,22 @@ class SearchUsersPresenter @Inject constructor(
     override val nullView = SearchUsersNullView
 
     private val searchQuerySubject = PublishSubject.create<String>()
-    private val searchQueryDisposable = subscribeToSearchSubject()
-    private var searchResults = listOf<GithubUser>()
+    private val nextPageSubject = PublishSubject.create<Unit>()
+    private val disposables = CompositeDisposable()
+    private var searchResults = mutableListOf<GithubUser>()
+    private var currentQuery: String? = null
+
+    init {
+        disposables += subscribeToQuerySubject()
+        disposables += subscribeToNextPageSubject()
+    }
 
     fun queryTextChanged(query: String) {
         searchQuerySubject.onNext(query)
+    }
+
+    fun nextPageRequest() {
+        nextPageSubject.onNext(Unit)
     }
 
     fun userSelected(id: Long) {
@@ -37,11 +50,11 @@ class SearchUsersPresenter @Inject constructor(
     }
 
     override fun onDestroy() {
-        searchQueryDisposable.dispose()
+        disposables.clear()
     }
 
-    private fun onSearchResult(foundUsers: List<GithubUser>) {
-        searchResults = foundUsers
+    private fun onNextPageSearchResult(foundUsers: List<GithubUser>) {
+        searchResults.addAll(foundUsers)
         showSearchResults()
     }
 
@@ -51,6 +64,8 @@ class SearchUsersPresenter @Inject constructor(
 
         if (uiItems.isEmpty()) {
             getView().showEmptyPlaceholder()
+        } else {
+            getView().hideEmptyPlaceholder()
         }
     }
 
@@ -58,34 +73,51 @@ class SearchUsersPresenter @Inject constructor(
         getView().showError(message)
     }
 
-    private fun subscribeToSearchSubject(): Disposable {
+    private fun subscribeToQuerySubject(): Disposable {
         return searchQuerySubject
                 .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
-                .showProgressAndHideEmptyPlaceholder()
+                .showProgressAndClearList()
+                .doOnNext { currentQuery = it }
                 .switchMapSingle { query ->
-                    usersRepository.searchUsers(query)
+                    usersRepository.searchUsers(query, searchResults.size)
                 }
-                .hideProgress()
+                .hideMainProgress()
                 .handleErrors()
                 .subscribeBy(
-                        onNext = ::onSearchResult
+                        onNext = ::onNextPageSearchResult
                 )
     }
 
-    private fun <T> Observable<T>.showProgressAndHideEmptyPlaceholder(): Observable<T> {
+    private fun subscribeToNextPageSubject(): Disposable {
+        return nextPageSubject
+                .filter { currentQuery != null }
+                .map { currentQuery!! }
+                .doOnNext { getView().showPaginateProgress() }
+                .switchMapSingle { query ->
+                    usersRepository.searchUsers(query, searchResults.size)
+                }
+                .doOnNext { getView().hidePaginateProgress() }
+                .subscribeBy(
+                        onNext = ::onNextPageSearchResult
+                )
+    }
+
+    private fun <T> Observable<T>.showProgressAndClearList(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
+                    searchResults.clear()
                     getView().run {
                         hideEmptyPlaceholder()
-                        showProgress()
+                        showMainProgress()
+                        showUsers(emptyList())
                     }
                 }
     }
 
-    private fun <T> Observable<T>.hideProgress(): Observable<T> {
+    private fun <T> Observable<T>.hideMainProgress(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
-                .doOnEach { getView().hideProgress() }
+                .doOnEach { getView().hideMainProgress() }
     }
 
     private fun <T> Observable<T>.handleErrors(): Observable<T> {

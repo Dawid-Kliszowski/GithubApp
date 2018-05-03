@@ -9,6 +9,8 @@ interface GithubApiService {
 
     @GET("search/users")
     fun getUsers(
-            @Query("q") searchQuery: String
+            @Query("q") searchQuery: String,
+            @Query("page") page: Int,
+            @Query("per_page") perPage: Int
     ): Single<SearchUsersResponse>
 }

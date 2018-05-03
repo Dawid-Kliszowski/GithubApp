@@ -7,9 +7,13 @@ interface SearchUsersView : MvpView {
 
     fun showError(message: String)
 
-    fun showProgress()
+    fun showMainProgress()
 
-    fun hideProgress()
+    fun hideMainProgress()
+
+    fun showPaginateProgress()
+
+    fun hidePaginateProgress()
 
     fun showUsers(users: List<UserUiItem>)
 
