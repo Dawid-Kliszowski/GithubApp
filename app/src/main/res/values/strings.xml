@@ -3,6 +3,8 @@
     <string name="menu_search_users_title">Search users</string>
     <string name="menu_search_users_hint">Search users…</string>
     <string name="error_message_default">Oops! Something went wrong.</string>
-    <string name="error_server_message_default">Something went wrong. Check your internet connection.</string>
+    <string name="error_unknown_server_error_message">Unknown server error.</string>
+    <string name="error_server_unavailable_message">Something went wrong. Check your internet connection.</string>
+    <string name="error_server_message_limits_reached">Request limits reached for unauthorized users.</string>
     <string name="empty_placeholder_text">Nothing to show :(\nPlease type a valid username</string>
 </resources>

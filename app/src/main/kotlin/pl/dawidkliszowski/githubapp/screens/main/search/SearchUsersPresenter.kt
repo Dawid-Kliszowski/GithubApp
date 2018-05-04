@@ -32,8 +32,7 @@ class SearchUsersPresenter @Inject constructor(
     private var currentQuery: String? = null
 
     init {
-        disposables += subscribeToQuerySubject()
-        disposables += subscribeToNextPageSubject()
+        disposables += subscribeToSubjects()
     }
 
     fun queryTextChanged(query: String) {
@@ -73,35 +72,36 @@ class SearchUsersPresenter @Inject constructor(
         getView().showError(message)
     }
 
-    private fun subscribeToQuerySubject(): Disposable {
-        return searchQuerySubject
-                .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
-                .distinctUntilChanged()
-                .showProgressAndClearList()
-                .doOnNext { currentQuery = it }
+    private fun subscribeToSubjects(): Disposable {
+        val queryObservables = Observable.merge( //combined into one observable to prevent making multiple repository requests at the same time
+                getNewQueryObservable(),
+                getLoadNextPageObservable()
+        )
+
+        return queryObservables
                 .switchMapSingle { query ->
                     usersRepository.searchUsers(query, searchResults.size)
                 }
-                .hideMainProgress()
+                .hideProgressViews()
                 .handleErrors()
                 .subscribeBy(
                         onNext = ::onNextPageSearchResult
                 )
     }
 
-    private fun subscribeToNextPageSubject(): Disposable {
+    private fun getNewQueryObservable(): Observable<String> {
+        return searchQuerySubject
+                .debounce(SEARCH_QUERY_DEBOUNCE_MILLIS, TimeUnit.MILLISECONDS)
+                .distinctUntilChanged()
+                .showProgressAndClearList()
+                .doOnNext { currentQuery = it }
+    }
+
+    private fun getLoadNextPageObservable(): Observable<String> {
         return nextPageSubject
                 .filter { currentQuery != null }
                 .map { currentQuery!! }
                 .doOnNext { getView().showPaginateProgress() }
-                .switchMapSingle { query ->
-                    usersRepository.searchUsers(query, searchResults.size)
-                }
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext { getView().hidePaginateProgress() }
-                .subscribeBy(
-                        onNext = ::onNextPageSearchResult
-                )
     }
 
     private fun <T> Observable<T>.showProgressAndClearList(): Observable<T> {
@@ -116,9 +116,12 @@ class SearchUsersPresenter @Inject constructor(
                 }
     }
 
-    private fun <T> Observable<T>.hideMainProgress(): Observable<T> {
+    private fun <T> Observable<T>.hideProgressViews(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
-                .doOnEach { getView().hideMainProgress() }
+                .doOnEach {
+                    getView().hideMainProgress()
+                    getView().hidePaginateProgress()
+                }
     }
 
     private fun <T> Observable<T>.handleErrors(): Observable<T> {

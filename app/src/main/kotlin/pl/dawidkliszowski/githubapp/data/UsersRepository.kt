@@ -3,9 +3,12 @@ package pl.dawidkliszowski.githubapp.data
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import pl.dawidkliszowski.githubapp.api.GithubApiService
+import pl.dawidkliszowski.githubapp.model.api.SearchUsersResponse
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.UsersApiResponseMapper
+import retrofit2.Response
 import java.io.IOException
+import java.net.HttpURLConnection.*
 import javax.inject.Inject
 
 private const val USERS_REQUEST_ITEMS_PER_PAGE = 30
@@ -22,17 +25,29 @@ class UsersRepository @Inject constructor(
         } else {
             val page = calculateNextPage(fromItem)
             githubApiService.getUsers(query, page, USERS_REQUEST_ITEMS_PER_PAGE)
+                    .map(::extractSearchUsersResponse)
                     .map(usersApiResponseMapper::mapApiResponseToDomainUsers)
                     .onErrorResumeNext { throwCustomException(it) }
                     .subscribeOn(Schedulers.io())
         }
     }
 
-    private fun <T> throwCustomException(throwable: Throwable): T {
-        if (throwable.isNetworkException) {
-            throw RemoteRepositoryUnavailableException()
+    private fun extractSearchUsersResponse(response: Response<SearchUsersResponse>): SearchUsersResponse {
+        return if (response.isSuccessful) {
+            response.body()!!
         } else {
-            throw throwable
+            throw when (response.code()) {
+                HTTP_FORBIDDEN -> RemoteRepositoryLimitsReachedException()
+                else -> UnknownRemoteRepositoryException()
+            }
+        }
+    }
+
+    private fun <T> throwCustomException(throwable: Throwable): Single<T> {
+        return if (throwable.isNetworkException) {
+            Single.error(RemoteRepositoryUnavailableException())
+        } else {
+            Single.error(throwable)
         }
     }
 
