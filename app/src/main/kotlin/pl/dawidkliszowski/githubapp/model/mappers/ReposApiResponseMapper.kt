@@ -7,6 +7,10 @@ import javax.inject.Inject
 class ReposApiResponseMapper @Inject constructor() {
 
     fun mapApiResponseToDomainRepos(searchRepoResponse: SearchReposApiResponse): List<GithubRepo> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return searchRepoResponse.items.map { searchRepoItem ->
+            with (searchRepoItem) {
+                GithubRepo(id, name, description, owner.avatarUrl)
+            }
+        }
     }
 }

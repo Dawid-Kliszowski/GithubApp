@@ -76,7 +76,7 @@ class SearchPresenterTest {
 
     @Test
     fun `shows progress after one second debounce`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -88,7 +88,7 @@ class SearchPresenterTest {
 
     @Test
     fun `hides progress after users fetched with success`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -98,7 +98,7 @@ class SearchPresenterTest {
 
     @Test
     fun `hides progress after non fatal error when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -108,7 +108,7 @@ class SearchPresenterTest {
 
     @Test
     fun `shows error message after non fatal error when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -118,7 +118,7 @@ class SearchPresenterTest {
 
     @Test
     fun `hides empty placeholder when start searching users`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -128,7 +128,7 @@ class SearchPresenterTest {
 
     @Test
     fun `shows empty placeholder on empty result when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -138,7 +138,7 @@ class SearchPresenterTest {
 
     @Test
     fun `not shows empty placeholder on non-empty result when fetching users`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
 
         searchPresenter.queryTextChanged(testQuery)
@@ -148,7 +148,7 @@ class SearchPresenterTest {
 
     @Test
     fun `navigates to proper user details when selected item`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
         val avatarImageViewWrapperMock = mock<ViewWrapper>()
         val usernameTextViewWrapperMock = mock<ViewWrapper>()
@@ -174,7 +174,7 @@ class SearchPresenterTest {
 
     @Test
     fun `shows and hides paginate progress when paginating`() {
-        whenever(usersRepositoryMock.searchUsers(any(), any()))
+        whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)

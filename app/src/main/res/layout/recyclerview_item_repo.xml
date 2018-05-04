@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/recycler_View_item_margin"
+    android:layout_marginTop="@dimen/recycler_view_item_margin_half"
+    android:layout_marginEnd="@dimen/recycler_View_item_margin"
+    android:layout_marginBottom="@dimen/recycler_view_item_margin_half">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/content_padding_small">
+
+        <TextView
+            android:id="@+id/repoNameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_large"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="RepoName"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/avatarImageView"
+            android:layout_width="@dimen/avatar_size_small"
+            android:layout_height="@dimen/avatar_size_small"
+            android:src="@drawable/user_avatar_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/ownerNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextViewSmall"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:textColor="@color/blueDark"
+            app:layout_constraintEnd_toStartOf="@id/avatarImageView"
+            app:layout_constraintTop_toTopOf="@id/avatarImageView"
+            app:layout_constraintBottom_toBottomOf="@id/avatarImageView"
+            tools:text="username"/>
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/AppTheme.TextViewSmall"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/repoNameTextView"
+            app:layout_constraintEnd_toStartOf="@id/ownerNameTextView"
+            tools:text="Description of repository"/>
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

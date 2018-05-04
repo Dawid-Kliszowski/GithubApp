@@ -51,7 +51,6 @@ abstract class BaseRemoteRepository<T, A: ApiResponseModel> {
     private val Throwable.isNetworkException
         get() = this is IOException
 
-
     private fun canLoadNextPage(fromItem: Int): Boolean {
         return (fromItem % REQUEST_ITEMS_PER_PAGE) == 0
     }

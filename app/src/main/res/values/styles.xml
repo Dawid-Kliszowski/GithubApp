@@ -10,12 +10,12 @@
 
     <style name="AppTheme.TextViewNormal">
         <item name="android:textSize">@dimen/text_size_medium</item>
-        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textColor">@color/grayDark</item>
     </style>
 
     <style name="AppTheme.TextViewSmall">
         <item name="android:textSize">@dimen/text_size_small</item>
-        <item name="android:textColor">@color/gray_medium</item>
+        <item name="android:textColor">@color/grayMedium</item>
     </style>
 
 </resources>
