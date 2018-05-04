@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">GithubApp</string>
+    <string name="screen_user_details_label">User Details</string>
     <string name="menu_search_users_title">Search users</string>
     <string name="menu_search_users_hint">Search users…</string>
     <string name="error_message_default">Oops! Something went wrong.</string>
@@ -7,4 +8,6 @@
     <string name="error_server_unavailable_message">Something went wrong. Check your internet connection.</string>
     <string name="error_server_message_limits_reached">Request limits reached for unauthorized users.</string>
     <string name="empty_placeholder_text">Nothing to show :(\nPlease type a valid username</string>
+    <string name="score_label">"Score: "</string>
+    <string name="followers_label">"Followers: "</string>
 </resources>

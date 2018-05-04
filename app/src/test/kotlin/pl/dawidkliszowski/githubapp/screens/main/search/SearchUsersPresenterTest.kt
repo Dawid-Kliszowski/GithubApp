@@ -1,9 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
-import com.nhaarman.mockito_kotlin.any
-import com.nhaarman.mockito_kotlin.never
-import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Single
 import org.junit.*
 import org.junit.runner.RunWith
@@ -18,6 +15,7 @@ import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
+import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import java.util.concurrent.TimeUnit
 
 private const val SEARCH_QUERY_DEBOUNCE_TIME_MILLIS = 1000L
@@ -51,9 +49,9 @@ class SearchUsersPresenterTest {
     lateinit var searchUsersPresenter: SearchUsersPresenter
 
     private val testSearchUsersResult = listOf(
-            GithubUser(id = 0, login = "aaa", avatarUrl = null, score = 0.1),
-            GithubUser(id = 1, login = "bbb", avatarUrl = null, score = 0.2),
-            GithubUser(id = 2, login = "ccc", avatarUrl = null, score = 0.3)
+            GithubUser(id = 0, login = "aaa", avatarUrl = null, score = 0.1, followersUrl = ""),
+            GithubUser(id = 1, login = "bbb", avatarUrl = null, score = 0.2, followersUrl = ""),
+            GithubUser(id = 2, login = "ccc", avatarUrl = null, score = 0.3, followersUrl = "")
     )
     private val testQuery = "abc"
 
@@ -152,11 +150,26 @@ class SearchUsersPresenterTest {
     fun `navigates to proper user details when selected item`() {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
+        val avatarImageViewWrapperMock = mock<ViewWrapper>()
+        val usernameTextViewWrapperMock = mock<ViewWrapper>()
+        val scoreTextViewWrapperMock = mock<ViewWrapper>()
 
         searchUsersPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        searchUsersPresenter.userSelected(testSearchUsersResult[0].id)
-        verify(navigatorMock).goToUserDetailsScreen(testSearchUsersResult[0])
+
+        searchUsersPresenter.userSelected(
+                testSearchUsersResult[0].id,
+                avatarImageViewWrapperMock,
+                usernameTextViewWrapperMock,
+                scoreTextViewWrapperMock
+        )
+
+        verify(navigatorMock).goToUserDetailsScreen(
+                testSearchUsersResult[0],
+                avatarImageViewWrapperMock,
+                usernameTextViewWrapperMock,
+                scoreTextViewWrapperMock
+        )
     }
 
     @Test
@@ -168,7 +181,7 @@ class SearchUsersPresenterTest {
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         searchUsersPresenter.nextPageRequest()
         verify(viewMock).showPaginateProgress()
-        verify(viewMock).hidePaginateProgress()
+        verify(viewMock, atLeastOnce()).hidePaginateProgress()
     }
 
     private fun advanceTime(timeMillis: Long) {

@@ -11,7 +11,7 @@ class UsersApiResponseMapper @Inject constructor() {
                 .map { searchUserItem ->
                     with (searchUserItem) {
                         val nonBlankOrNullAvatarUrl = getNonBlankOrNull(avatarUrl)
-                        GithubUser(id, login, nonBlankOrNullAvatarUrl, score)
+                        GithubUser(id, login, nonBlankOrNullAvatarUrl, score, followersUrl)
                     }
                 }
     }

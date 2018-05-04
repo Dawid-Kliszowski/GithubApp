@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="transition_avatar_image">avatar_image</string>
+    <string name="transition_username_text">username_text</string>
+    <string name="transition_score_text">score_text</string>
+</resources>

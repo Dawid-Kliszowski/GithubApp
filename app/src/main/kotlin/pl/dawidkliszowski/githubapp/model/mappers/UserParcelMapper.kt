@@ -8,7 +8,7 @@ class UserParcelMapper @Inject constructor() {
 
     fun mapToParcel(user: GithubUser): GithubUserParcel {
         return with (user) {
-            GithubUserParcel(id, login, avatarUrl, score)
+            GithubUserParcel(id, login, avatarUrl, score, followersUrl)
         }
     }
 }

@@ -2,6 +2,67 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/content_padding_normal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="@dimen/avatar_size_large"
+        android:layout_height="@dimen/avatar_size_large"
+        android:transitionName="@string/transition_avatar_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/content_padding_small"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_large"
+        android:transitionName="@string/transition_username_text"
+        app:layout_constraintStart_toEndOf="@id/avatarImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Sample Username"/>
+
+    <TextView
+        android:id="@+id/scoreLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_large"
+        android:text="@string/score_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/avatarImageView"/>
+
+    <TextView
+        android:id="@+id/scoreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_large"
+        android:transitionName="@string/transition_score_text"
+        app:layout_constraintStart_toEndOf="@id/scoreLabelTextView"
+        app:layout_constraintTop_toTopOf="@id/scoreLabelTextView"
+        tools:text="0.0"/>
+
+    <TextView
+        android:id="@+id/followersLabelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_large"
+        android:text="@string/followers_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scoreLabelTextView"/>
+
+    <TextView
+        android:id="@+id/followersTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_large"
+        app:layout_constraintStart_toEndOf="@id/followersLabelTextView"
+        app:layout_constraintTop_toTopOf="@id/followersLabelTextView"
+        tools:text="0"/>
 
 </android.support.constraint.ConstraintLayout>

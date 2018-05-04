@@ -12,6 +12,7 @@ import android.view.View
 import android.view.View.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
+import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import pl.dawidkliszowski.githubapp.utils.showToast
 import javax.inject.Inject
 
@@ -76,7 +77,14 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, S
     }
 
     private fun setupAdapter() {
-        usersAdapter.onUserItemClickListener = presenter::userSelected
+        usersAdapter.onUserItemClickListener = { userId, avatarImageView, usernameTextView, scoreTextView ->
+            presenter.userSelected(
+                    userId,
+                    ViewWrapper(avatarImageView),
+                    ViewWrapper(usernameTextView),
+                    ViewWrapper(scoreTextView)
+            )
+        }
         usersAdapter.onScrollToLastNonProgressItem = presenter::nextPageRequest
     }
 

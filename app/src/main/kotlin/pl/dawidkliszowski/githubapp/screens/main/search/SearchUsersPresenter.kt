@@ -12,6 +12,7 @@ import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
+import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -43,9 +44,21 @@ class SearchUsersPresenter @Inject constructor(
         nextPageSubject.onNext(Unit)
     }
 
-    fun userSelected(id: Long) {
+    fun userSelected(
+            id: Long,
+            avatarImageView: ViewWrapper,
+            usernameTextView: ViewWrapper,
+            scoreTextView: ViewWrapper
+    ) {
         val selectedUser = searchResults.find { it.id == id }
-        performNavigation { goToUserDetailsScreen(selectedUser!!) } //Should never be null
+        performNavigation {
+            goToUserDetailsScreen(
+                    selectedUser!!, //Should never be null
+                    avatarImageView,
+                    usernameTextView,
+                    scoreTextView
+            )
+        }
     }
 
     override fun onDestroy() {

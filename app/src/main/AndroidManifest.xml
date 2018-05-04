@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".screens.userdetails.UserDetailsActivity"/>
+        <activity android:name=".screens.userdetails.UserDetailsActivity"
+            android:label="@string/screen_user_details_label"/>
     </application>
 
 </manifest>

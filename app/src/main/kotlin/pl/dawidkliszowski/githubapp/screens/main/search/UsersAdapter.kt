@@ -25,7 +25,7 @@ class UsersAdapter @Inject constructor(
             notifyDataSetChanged()
         }
 
-    var onUserItemClickListener: ((Long) -> Unit)? = null
+    var onUserItemClickListener: ((userId: Long, avatarImageView: View, usernameTextView: View, scoreTextView: View) -> Unit)? = null
     var onScrollToLastNonProgressItem: (() -> Unit)? = null
 
     var isNextPageProgressVisible: Boolean = false
@@ -99,12 +99,12 @@ class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val avatarImageView: ImageView = itemView.avatarImageView
     private val usernameTextView: TextView = itemView.usernameTextView
-    private val ratingTextView: TextView = itemView.ratingTextView
+    private val scoreTextView: TextView = itemView.scoreTextView
 
     fun bindView(
             userItem: UserUiItem,
             picasso: Picasso,
-            onUserItemClickListener: ((Long) -> Unit)?,
+            onUserItemClickListener: ((userId: Long, avatarImageView: View, usernameTextView: View, scoreTextView: View) -> Unit)?,
             onAttachListener: () -> Unit
     ) {
         picasso.load(userItem.avatarUrl)
@@ -112,10 +112,10 @@ class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 .into(avatarImageView)
 
         usernameTextView.text = userItem.login
-        ratingTextView.text = userItem.score
+        scoreTextView.text = userItem.score
 
         itemView.setOnClickListener {
-            onUserItemClickListener?.invoke(userItem.id)
+            onUserItemClickListener?.invoke(userItem.id, avatarImageView, usernameTextView, scoreTextView)
         }
 
         addOnAttachListener(onAttachListener)
