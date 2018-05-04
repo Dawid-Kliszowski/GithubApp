@@ -12,6 +12,10 @@ import pl.dawidkliszowski.githubapp.model.parcel.GithubUserParcel
 import pl.dawidkliszowski.githubapp.mvp.MvpActivity
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import android.support.v4.util.Pair
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_user_details.*
+import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
+import javax.inject.Inject
 
 private const val BUNDLE_KEY_USER = BuildConfig.APPLICATION_ID + ".bundle_key_user"
 
@@ -51,8 +55,39 @@ class UserDetailsActivity : MvpActivity<UserDetailsView, UserDetailsNavigator, U
 
     @LayoutRes override val layoutResId: Int = R.layout.activity_user_details
 
+    @Inject lateinit var userParcelMapper: UserParcelMapper
+    @Inject lateinit var picasso: Picasso
+
     override fun injectDependencies() {
         activityComponent.inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initPresenterWithUser()
+    }
+
+    private fun initPresenterWithUser() {
+        val githubUser = userParcelMapper.fromParcel(intent.getParcelableExtra(BUNDLE_KEY_USER))
+        presenter.initWithUser(githubUser)
+    }
+
+    // UserDetailsView interface
+
+    override fun showAvatar(url: String) {
+        picasso.load(url).into(avatarImageView)
+    }
+
+    override fun showUsername(username: String) {
+        usernameTextView.text = username
+    }
+
+    override fun showUserScore(score: String) {
+        scoreTextView.text = score
+    }
+
+    override fun showFollowersCount(count: String) {
+        followersTextView.text = count
     }
 }
 

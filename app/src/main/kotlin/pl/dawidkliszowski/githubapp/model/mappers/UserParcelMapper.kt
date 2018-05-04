@@ -6,9 +6,15 @@ import javax.inject.Inject
 
 class UserParcelMapper @Inject constructor() {
 
-    fun mapToParcel(user: GithubUser): GithubUserParcel {
+    fun toParcel(user: GithubUser): GithubUserParcel {
         return with (user) {
             GithubUserParcel(id, login, avatarUrl, score, followersUrl)
+        }
+    }
+
+    fun fromParcel(userParcel: GithubUserParcel): GithubUser {
+        return with (userParcel) {
+            GithubUser(id, login, avatarUrl, score, followersUrl)
         }
     }
 }

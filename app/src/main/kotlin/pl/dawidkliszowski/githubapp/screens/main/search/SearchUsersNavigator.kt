@@ -1,9 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
 import android.app.Activity
-import android.content.Context
-import android.view.View
-import pl.dawidkliszowski.githubapp.di.qualifier.ActivityContext
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
 import pl.dawidkliszowski.githubapp.mvp.MvpNavigator
@@ -23,7 +20,7 @@ class SearchUsersNavigator @Inject constructor(
             usernameTextView: ViewWrapper,
             scoreTextView: ViewWrapper
     ) {
-        val userParcel = userParcelMapper.mapToParcel(user)
+        val userParcel = userParcelMapper.toParcel(user)
         val startActivityRequest = StartUserActivityRequest.Builder(userParcel)
                 .setAvatarImageView(avatarImageView)
                 .setUsernameTextView(usernameTextView)

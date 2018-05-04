@@ -13,7 +13,8 @@
         android:layout_height="@dimen/avatar_size_large"
         android:transitionName="@string/transition_avatar_image"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/user_avatar_placeholder"/>
 
     <TextView
         android:id="@+id/usernameTextView"
