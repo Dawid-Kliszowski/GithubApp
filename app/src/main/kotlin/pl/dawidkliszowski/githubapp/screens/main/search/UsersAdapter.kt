@@ -12,9 +12,12 @@ import pl.dawidkliszowski.githubapp.R
 import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
 import javax.inject.Inject
 
+private const val VIEW_TYPE_USER = 1
+private const val VIEW_TYPE_NEXT_PAGE_PROGRESS = 2
+
 class UsersAdapter @Inject constructor(
         private val picasso: Picasso
-) : RecyclerView.Adapter<UsersViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var userItems: List<UserUiItem> = emptyList()
         set(value) {
@@ -23,28 +26,73 @@ class UsersAdapter @Inject constructor(
         }
 
     var onUserItemClickListener: ((Long) -> Unit)? = null
-    var onPaginateListener: (() -> Unit)? = null
+    var onScrollToLastNonProgressItem: (() -> Unit)? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UsersViewHolder {
-        val view = LayoutInflater
-                .from(parent.context)
-                .inflate(R.layout.recycler_view_item_user, parent, false)
-        return UsersViewHolder(view)
+    var isNextPageProgressVisible: Boolean = false
+        set(value) {
+            field = value
+            currentRecyclerView?.post {
+                notifyDataSetChanged()
+            }
+        }
+
+    private var currentRecyclerView: RecyclerView? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val inflater = LayoutInflater.from(parent.context)
+
+        return when (viewType) {
+            VIEW_TYPE_USER -> {
+                val view = inflater.inflate(R.layout.recycler_view_item_user, parent, false)
+                UsersViewHolder(view)
+            }
+            VIEW_TYPE_NEXT_PAGE_PROGRESS -> {
+                val view = inflater.inflate(R.layout.recycler_view_item_progress, parent, false)
+                ProgressViewHolder(view)
+            }
+            else -> throw IllegalArgumentException("Unknown view type")
+        }
     }
 
-    override fun getItemCount(): Int = userItems.size
-
-    override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
-        holder.bindView(userItems[position], picasso, onUserItemClickListener)
+    override fun getItemCount(): Int {
+        return if (isNextPageProgressVisible) userItems.size + 1 else userItems.size
     }
 
-    fun showPaginateProgress() {
-        //todo implement
+    override fun getItemViewType(position: Int): Int {
+        return if (position < userItems.size) {
+            VIEW_TYPE_USER
+        } else {
+            VIEW_TYPE_NEXT_PAGE_PROGRESS
+        }
     }
 
-    fun hidePaginateProgress() {
-        //todo implement
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (getItemViewType(position)) {
+            VIEW_TYPE_USER -> bindUserViewHolder(holder as UsersViewHolder, position)
+            VIEW_TYPE_NEXT_PAGE_PROGRESS -> Unit //no binding needed
+        }
     }
+
+    private fun bindUserViewHolder(usersViewHolder: UsersViewHolder, position: Int) {
+        usersViewHolder.bindView(userItems[position], picasso, onUserItemClickListener) {
+            if (isLast(position)) {
+                onScrollToLastNonProgressItem?.invoke()
+            }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        currentRecyclerView = recyclerView
+
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        currentRecyclerView = null
+        super.onDetachedFromRecyclerView(recyclerView)
+    }
+
+    private fun isLast(position: Int) = position == itemCount - 1
 }
 
 class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -53,7 +101,12 @@ class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val usernameTextView: TextView = itemView.usernameTextView
     private val ratingTextView: TextView = itemView.ratingTextView
 
-    fun bindView(userItem: UserUiItem, picasso: Picasso, onUserItemClickListener: ((Long) -> Unit)?) {
+    fun bindView(
+            userItem: UserUiItem,
+            picasso: Picasso,
+            onUserItemClickListener: ((Long) -> Unit)?,
+            onAttachListener: () -> Unit
+    ) {
         picasso.load(userItem.avatarUrl)
                 .placeholder(R.drawable.user_avatar_placeholder)
                 .into(avatarImageView)
@@ -64,5 +117,23 @@ class UsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.setOnClickListener {
             onUserItemClickListener?.invoke(userItem.id)
         }
+
+        addOnAttachListener(onAttachListener)
+    }
+
+    private fun addOnAttachListener(onViewAttached: () -> Unit) {
+        if (itemView.tag != null) {
+            itemView.removeOnAttachStateChangeListener(itemView.tag as View.OnAttachStateChangeListener)
+        }
+
+        val onAttachListener = object : View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(view: View?) = Unit
+            override fun onViewAttachedToWindow(view: View?) = onViewAttached.invoke()
+        }
+
+        itemView.addOnAttachStateChangeListener(onAttachListener)
+        itemView.tag = onAttachListener
     }
 }
+
+class ProgressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

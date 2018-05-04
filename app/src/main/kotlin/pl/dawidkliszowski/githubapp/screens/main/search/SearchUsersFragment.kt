@@ -29,7 +29,7 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, S
 
     override fun onDestroy() {
         usersAdapter.onUserItemClickListener = null
-        usersAdapter.onPaginateListener = null
+        usersAdapter.onScrollToLastNonProgressItem = null
         super.onDestroy()
     }
 
@@ -77,7 +77,7 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, S
 
     private fun setupAdapter() {
         usersAdapter.onUserItemClickListener = presenter::userSelected
-        usersAdapter.onPaginateListener = presenter::nextPageRequest
+        usersAdapter.onScrollToLastNonProgressItem = presenter::nextPageRequest
     }
 
     // SearchUsersView interface
@@ -107,10 +107,10 @@ class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, S
     }
 
     override fun showPaginateProgress() {
-        usersAdapter.showPaginateProgress()
+        usersAdapter.isNextPageProgressVisible = true
     }
 
     override fun hidePaginateProgress() {
-        usersAdapter.hidePaginateProgress()
+        usersAdapter.isNextPageProgressVisible = false
     }
 }

@@ -97,6 +97,7 @@ class SearchUsersPresenter @Inject constructor(
                 .switchMapSingle { query ->
                     usersRepository.searchUsers(query, searchResults.size)
                 }
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext { getView().hidePaginateProgress() }
                 .subscribeBy(
                         onNext = ::onNextPageSearchResult

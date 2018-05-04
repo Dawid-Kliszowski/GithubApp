@@ -9,6 +9,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 private const val USERS_REQUEST_ITEMS_PER_PAGE = 30
+private const val API_PAGE_OFFSET = 1 //API pages start from 1 instead of 0
 
 class UsersRepository @Inject constructor(
         private val githubApiService: GithubApiService,
@@ -44,6 +45,6 @@ class UsersRepository @Inject constructor(
     }
 
     private fun calculateNextPage(fromItem: Int): Int {
-        return fromItem / USERS_REQUEST_ITEMS_PER_PAGE
+        return (fromItem / USERS_REQUEST_ITEMS_PER_PAGE) + API_PAGE_OFFSET
     }
 }
