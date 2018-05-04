@@ -15,7 +15,7 @@ class SearchGuthubRepoItem(
         @SerializedName("full_name") val fullName: String,
         @SerializedName("private") val private: Boolean,
         @SerializedName("html_url") val htmlUrl: String,
-        @SerializedName("description") val description: String,
+        @SerializedName("description") val description: String?,
         @SerializedName("fork") val fork: Boolean,
         @SerializedName("url") val url: String,
         @SerializedName("created_at") val createdAt: String,

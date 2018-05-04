@@ -1,14 +1,19 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
+import pl.dawidkliszowski.githubapp.data.GithubReposRepository
 import pl.dawidkliszowski.githubapp.data.UsersRepository
+import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
+import pl.dawidkliszowski.githubapp.model.mappers.ReposUiItemsMapper
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
@@ -20,7 +25,9 @@ private const val SEARCH_QUERY_DEBOUNCE_MILLIS = 1000L
 
 class SearchPresenter @Inject constructor(
         private val usersRepository: UsersRepository,
+        private val reposRepository: GithubReposRepository,
         private val usersUiItemsMapper: UsersUiItemsMapper,
+        private val reposUiItemsMapper: ReposUiItemsMapper,
         private val errorHandler: ErrorHandler
 ) : MvpPresenter<SearchUsersView, SearchNavigator>() {
 
@@ -29,7 +36,8 @@ class SearchPresenter @Inject constructor(
     private val searchQuerySubject = PublishSubject.create<String>()
     private val nextPageSubject = PublishSubject.create<Unit>()
     private val disposables = CompositeDisposable()
-    private var searchResults = mutableListOf<GithubUser>()
+    private var searchUserResults = mutableListOf<GithubUser>()
+    private var searchRepoResults = mutableListOf<GithubRepo>()
     private var currentQuery: String? = null
 
     init {
@@ -50,7 +58,7 @@ class SearchPresenter @Inject constructor(
             usernameTextView: ViewWrapper,
             scoreTextView: ViewWrapper
     ) {
-        val selectedUser = searchResults.find { it.id == id }
+        val selectedUser = searchUserResults.find { it.id == id }
         performNavigation {
             goToUserDetailsScreen(
                     selectedUser!!, //Should never be null
@@ -65,16 +73,22 @@ class SearchPresenter @Inject constructor(
         disposables.clear()
     }
 
-    private fun onNextPageSearchResult(foundUsers: List<GithubUser>) {
-        searchResults.addAll(foundUsers)
+    private fun onNextPageQueryResult(result: CombinedQueryResult) {
+        searchUserResults.addAll(result.users)
+        searchRepoResults.addAll(result.repos)
         showSearchResults()
     }
 
     private fun showSearchResults() {
-        val uiItems = usersUiItemsMapper.mapToUiItems(searchResults)
-        getView().showUsers(uiItems)
+        val usersUiItems = usersUiItemsMapper.mapToUiItems(searchUserResults)
+        val reposUiItems = reposUiItemsMapper.mapToUiItems(searchRepoResults)
 
-        if (uiItems.isEmpty()) {
+        val combinedResults = (usersUiItems + reposUiItems)
+                .sortedBy { searchUiItem -> searchUiItem.id }
+
+        getView().showSearchResults(combinedResults)
+
+        if (combinedResults.isEmpty()) {
             getView().showEmptyPlaceholder()
         } else {
             getView().hideEmptyPlaceholder()
@@ -93,12 +107,12 @@ class SearchPresenter @Inject constructor(
 
         return queryObservables
                 .switchMapSingle { query ->
-                    usersRepository.query(query, searchResults.size)
+                    performCombinedQuery(query)
                 }
                 .hideProgressViews()
                 .handleErrors()
                 .subscribeBy(
-                        onNext = ::onNextPageSearchResult
+                        onNext = ::onNextPageQueryResult
                 )
     }
 
@@ -120,11 +134,12 @@ class SearchPresenter @Inject constructor(
     private fun <T> Observable<T>.showProgressAndClearList(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
-                    searchResults.clear()
+                    searchUserResults.clear()
+                    searchRepoResults.clear()
                     getView().run {
                         hideEmptyPlaceholder()
                         showMainProgress()
-                        showUsers(emptyList())
+                        showSearchResults(emptyList())
                     }
                 }
     }
@@ -146,4 +161,19 @@ class SearchPresenter @Inject constructor(
                 }
                 .retry { throwable -> errorHandler.isNonFatalError(throwable) }
     }
+
+    private fun performCombinedQuery(query: String): Single<CombinedQueryResult> {
+        return Observables
+                .combineLatest(
+                        usersRepository.query(query, searchUserResults.size).toObservable(),
+                        reposRepository.query(query, searchRepoResults.size).toObservable()
+                ).map { (users, repos) ->
+                    CombinedQueryResult(users, repos)
+                }.firstOrError()
+    }
 }
+
+private class CombinedQueryResult(
+        val users: List<GithubUser>,
+        val repos: List<GithubRepo>
+)

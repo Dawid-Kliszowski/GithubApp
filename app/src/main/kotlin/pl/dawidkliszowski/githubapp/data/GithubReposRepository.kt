@@ -6,8 +6,9 @@ import pl.dawidkliszowski.githubapp.model.api.SearchReposApiResponse
 import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
 import pl.dawidkliszowski.githubapp.model.mappers.ReposApiResponseMapper
 import retrofit2.Response
+import javax.inject.Inject
 
-class GithubReposRepository(
+class GithubReposRepository @Inject constructor(
         private val reposApiService: ReposApiService,
         private val mapper: ReposApiResponseMapper
 ) : BaseRemoteRepository<GithubRepo, SearchReposApiResponse>() {

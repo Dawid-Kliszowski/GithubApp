@@ -10,3 +10,5 @@ fun Context.showToast(message: String) {
 fun Double.format(digitsAfterDot: Int): String {
     return String.format("%.${digitsAfterDot}f", this)
 }
+
+fun String.getNonBlankOrNull() = if (this.isNotBlank()) this else null

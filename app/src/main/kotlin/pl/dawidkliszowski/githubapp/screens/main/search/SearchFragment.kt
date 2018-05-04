@@ -11,7 +11,7 @@ import android.view.MenuInflater
 import android.view.View
 import android.view.View.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
+import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
 import pl.dawidkliszowski.githubapp.screens.main.search.adapter.UsersAdapter
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import pl.dawidkliszowski.githubapp.utils.showToast
@@ -103,8 +103,8 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
         contentLoadingProgressBar.visibility = GONE
     }
 
-    override fun showUsers(users: List<UserUiItem>) {
-        usersAdapter.userItems = users
+    override fun showSearchResults(results: List<SearchUiItem>) {
+        usersAdapter.items = results
     }
 
     override fun showEmptyPlaceholder() {

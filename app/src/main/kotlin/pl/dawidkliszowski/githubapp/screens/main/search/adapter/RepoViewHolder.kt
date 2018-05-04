@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recyclerview_item_repo.view.*
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
+import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
 
 class RepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -17,7 +17,7 @@ class RepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val ownerNameTextView: TextView = itemView.ownerNameTextView
 
     fun bindView(
-            repoItem: GithubRepo,
+            repoItem: SearchUiItem.RepoUiItem,
             picasso: Picasso,
             onAttachListener: () -> Unit
     ) {
@@ -27,6 +27,7 @@ class RepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         repoNameTextView.text = repoItem.name
         descriptionTextView.text = repoItem.description
+        ownerNameTextView.text = repoItem.ownerName
 
         addOnAttachListener(onAttachListener)
     }

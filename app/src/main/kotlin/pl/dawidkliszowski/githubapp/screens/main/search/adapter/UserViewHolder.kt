@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recycler_view_item_user.view.*
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
+import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
 
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -16,7 +16,7 @@ class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val scoreTextView: TextView = itemView.scoreTextView
 
     fun bindView(
-            userItem: UserUiItem,
+            userItem: SearchUiItem.UserUiItem,
             picasso: Picasso,
             onUserItemClickListener: ((userId: Long, avatarImageView: View, usernameTextView: View, scoreTextView: View) -> Unit)?,
             onAttachListener: () -> Unit

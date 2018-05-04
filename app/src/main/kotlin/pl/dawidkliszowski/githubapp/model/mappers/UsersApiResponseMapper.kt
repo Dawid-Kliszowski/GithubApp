@@ -2,6 +2,7 @@ package pl.dawidkliszowski.githubapp.model.mappers
 
 import pl.dawidkliszowski.githubapp.model.api.SearchUsersResponse
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
+import pl.dawidkliszowski.githubapp.utils.getNonBlankOrNull
 import javax.inject.Inject
 
 class UsersApiResponseMapper @Inject constructor() {
@@ -10,11 +11,8 @@ class UsersApiResponseMapper @Inject constructor() {
         return searchUsersResponse.users
                 .map { searchUserItem ->
                     with (searchUserItem) {
-                        val nonBlankOrNullAvatarUrl = getNonBlankOrNull(avatarUrl)
-                        GithubUser(id, login, nonBlankOrNullAvatarUrl, score, followersUrl)
+                        GithubUser(id, login, avatarUrl.getNonBlankOrNull(), score, followersUrl)
                     }
                 }
     }
-
-    private fun getNonBlankOrNull(text: String) = if (text.isNotBlank()) text else null
 }

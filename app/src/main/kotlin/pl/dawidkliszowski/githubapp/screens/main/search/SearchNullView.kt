@@ -1,6 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
-import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
+import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
 
 object SearchNullView : SearchUsersView {
 
@@ -10,7 +10,7 @@ object SearchNullView : SearchUsersView {
 
     override fun hideMainProgress() { /* no-op */ }
 
-    override fun showUsers(users: List<UserUiItem>) { /* no-op */ }
+    override fun showSearchResults(results: List<SearchUiItem>) { /* no-op */ }
 
     override fun showEmptyPlaceholder() { /* no-op */ }
 
