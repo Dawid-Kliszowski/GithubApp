@@ -9,7 +9,7 @@ import pl.dawidkliszowski.githubapp.screens.userdetails.UserDetailsActivity
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import javax.inject.Inject
 
-class SearchUsersNavigator @Inject constructor(
+class SearchNavigator @Inject constructor(
         private val activity: Activity,
         private val userParcelMapper: UserParcelMapper
 ) : MvpNavigator {

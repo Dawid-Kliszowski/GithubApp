@@ -2,7 +2,7 @@ package pl.dawidkliszowski.githubapp.screens.main.search
 
 import pl.dawidkliszowski.githubapp.model.ui.UserUiItem
 
-object SearchUsersNullView : SearchUsersView {
+object SearchNullView : SearchUsersView {
 
     override fun showError(message: String) { /* no-op */ }
 

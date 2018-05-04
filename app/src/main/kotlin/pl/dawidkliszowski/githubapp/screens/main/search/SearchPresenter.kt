@@ -18,13 +18,13 @@ import javax.inject.Inject
 
 private const val SEARCH_QUERY_DEBOUNCE_MILLIS = 1000L
 
-class SearchUsersPresenter @Inject constructor(
+class SearchPresenter @Inject constructor(
         private val usersRepository: UsersRepository,
         private val usersUiItemsMapper: UsersUiItemsMapper,
         private val errorHandler: ErrorHandler
-) : MvpPresenter<SearchUsersView, SearchUsersNavigator>() {
+) : MvpPresenter<SearchUsersView, SearchNavigator>() {
 
-    override val nullView = SearchUsersNullView
+    override val nullView = SearchNullView
 
     private val searchQuerySubject = PublishSubject.create<String>()
     private val nextPageSubject = PublishSubject.create<Unit>()
@@ -93,7 +93,7 @@ class SearchUsersPresenter @Inject constructor(
 
         return queryObservables
                 .switchMapSingle { query ->
-                    usersRepository.searchUsers(query, searchResults.size)
+                    usersRepository.query(query, searchResults.size)
                 }
                 .hideProgressViews()
                 .handleErrors()

@@ -16,7 +16,7 @@ import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import pl.dawidkliszowski.githubapp.utils.showToast
 import javax.inject.Inject
 
-class SearchUsersFragment : MvpFragment<SearchUsersView, SearchUsersNavigator, SearchUsersPresenter>(), SearchUsersView {
+class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPresenter>(), SearchUsersView {
 
     @LayoutRes override val layoutResId = R.layout.fragment_search
 

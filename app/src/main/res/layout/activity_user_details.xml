@@ -33,7 +33,8 @@
         android:id="@+id/scoreLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_large"
+        style="@style/AppTheme.TextViewSmall"
+        android:layout_marginTop="@dimen/margin_small"
         android:text="@string/score_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/avatarImageView"/>
@@ -42,7 +43,7 @@
         android:id="@+id/scoreTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_large"
+        style="@style/AppTheme.TextViewSmall"
         android:transitionName="@string/transition_score_text"
         app:layout_constraintStart_toEndOf="@id/scoreLabelTextView"
         app:layout_constraintTop_toTopOf="@id/scoreLabelTextView"
@@ -52,7 +53,7 @@
         android:id="@+id/followersLabelTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_large"
+        style="@style/AppTheme.TextViewSmall"
         android:text="@string/followers_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scoreLabelTextView"/>
@@ -61,7 +62,7 @@
         android:id="@+id/followersTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_large"
+        style="@style/AppTheme.TextViewSmall"
         app:layout_constraintStart_toEndOf="@id/followersLabelTextView"
         app:layout_constraintTop_toTopOf="@id/followersLabelTextView"
         tools:text="0"/>

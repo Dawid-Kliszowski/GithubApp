@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit
 private const val SEARCH_QUERY_DEBOUNCE_TIME_MILLIS = 1000L
 
 @RunWith(MockitoJUnitRunner::class)
-class SearchUsersPresenterTest {
+class SearchPresenterTest {
 
     companion object {
         val testSchedulersInitializer = RxTestSchedulersInitializer()
@@ -40,13 +40,13 @@ class SearchUsersPresenterTest {
     }
 
     @Mock lateinit var viewMock: SearchUsersView
-    @Mock lateinit var navigatorMock: SearchUsersNavigator
+    @Mock lateinit var navigatorMock: SearchNavigator
     @Mock lateinit var usersRepositoryMock: UsersRepository
     @Mock lateinit var stringProvider: StringProvider
     @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
     @InjectMocks lateinit var errorHandler: ErrorHandler
 
-    lateinit var searchUsersPresenter: SearchUsersPresenter
+    private lateinit var searchPresenter: SearchPresenter
 
     private val testSearchUsersResult = listOf(
             GithubUser(id = 0, login = "aaa", avatarUrl = null, score = 0.1, followersUrl = ""),
@@ -57,21 +57,21 @@ class SearchUsersPresenterTest {
 
     @Before
     fun setUp() {
-        searchUsersPresenter = SearchUsersPresenter(
+        searchPresenter = SearchPresenter(
                 usersRepositoryMock,
                 usersUiItemsMapper,
                 errorHandler
         )
         whenever(stringProvider.getString(any())).thenReturn("")
-        searchUsersPresenter.attachNavigator(navigatorMock)
-        searchUsersPresenter.attachView(viewMock)
+        searchPresenter.attachNavigator(navigatorMock)
+        searchPresenter.attachView(viewMock)
     }
 
     @After
     fun finish() {
-        searchUsersPresenter.detachView()
-        searchUsersPresenter.detachNavigator()
-        searchUsersPresenter.onDestroy()
+        searchPresenter.detachView()
+        searchPresenter.detachNavigator()
+        searchPresenter.onDestroy()
     }
 
     @Test
@@ -79,7 +79,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
 
         verify(viewMock, never()).showMainProgress()
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
@@ -91,7 +91,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideMainProgress()
     }
@@ -101,7 +101,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideMainProgress()
     }
@@ -111,7 +111,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showError(any())
     }
@@ -121,7 +121,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideEmptyPlaceholder()
     }
@@ -131,7 +131,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showEmptyPlaceholder()
     }
@@ -141,7 +141,7 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(testSearchUsersResult))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock, never()).showEmptyPlaceholder()
     }
@@ -154,10 +154,10 @@ class SearchUsersPresenterTest {
         val usernameTextViewWrapperMock = mock<ViewWrapper>()
         val scoreTextViewWrapperMock = mock<ViewWrapper>()
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
 
-        searchUsersPresenter.userSelected(
+        searchPresenter.userSelected(
                 testSearchUsersResult[0].id,
                 avatarImageViewWrapperMock,
                 usernameTextViewWrapperMock,
@@ -177,9 +177,9 @@ class SearchUsersPresenterTest {
         whenever(usersRepositoryMock.searchUsers(any(), any()))
                 .thenReturn(Single.just(emptyList()))
 
-        searchUsersPresenter.queryTextChanged(testQuery)
+        searchPresenter.queryTextChanged(testQuery)
         advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        searchUsersPresenter.nextPageRequest()
+        searchPresenter.nextPageRequest()
         verify(viewMock).showPaginateProgress()
         verify(viewMock, atLeastOnce()).hidePaginateProgress()
     }

@@ -10,12 +10,13 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import pl.dawidkliszowski.githubapp.api.ApiConstants
-import pl.dawidkliszowski.githubapp.api.GithubApiService
+import pl.dawidkliszowski.githubapp.api.UsersApiService
 import pl.dawidkliszowski.githubapp.di.qualifier.AppContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
+import pl.dawidkliszowski.githubapp.api.ReposApiService
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 @Module
@@ -43,7 +44,11 @@ class ApplicationModule(private val application: Application) {
 
     @Provides
     @Singleton
-    fun provideGithubApiService(retrofit: Retrofit): GithubApiService = retrofit.createService()
+    fun provideUsersApiService(retrofit: Retrofit): UsersApiService = retrofit.createService()
+
+    @Provides
+    @Singleton
+    fun provideReposApiService(retrofit: Retrofit): ReposApiService = retrofit.createService()
 
     private fun createOkHttpClient(): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
