@@ -5,7 +5,6 @@ import android.support.annotation.CallSuper
 
 abstract class MvpPresenter<V : MvpView, N : MvpNavigator> {
 
-    protected abstract val nullView: V
     private var view: V? = null
     private var navigator: N? = null
 
@@ -39,8 +38,8 @@ abstract class MvpPresenter<V : MvpView, N : MvpNavigator> {
         //prepared to override in particular presenter implementations
     }
 
-    fun getView(): V {
-        return view?.let { it } ?: nullView
+    fun performViewAction(viewAction: V.() -> Unit) {
+        view?.let { viewAction(it) }
     }
 
     fun performNavigation(navigationAction: N.() -> Unit) {

@@ -18,7 +18,6 @@ class UserDetailsPresenter @Inject constructor(
         private val errorHandler: ErrorHandler
 ) : MvpPresenter<UserDetailsView, UserDetailsNavigator>() {
 
-    override val nullView = UserDetailsNullView
     private val disposables = CompositeDisposable()
     private var user: GithubUser? = null
     private var followersCount: Int? = null
@@ -43,30 +42,30 @@ class UserDetailsPresenter @Inject constructor(
 
     private fun showAvatar() {
         user?.avatarUrl?.let {
-            getView().showAvatar(it)
+            performViewAction { showAvatar(it) }
         }
     }
 
     private fun showUsername() {
         user?.let {
-            getView().showUsername(it.login)
+            performViewAction { showUsername(it.login) }
         }
     }
 
     private fun showScore() {
         user?.let {
             val scoreText = it.score.format(2)
-            getView().showUserScore(scoreText)
+            performViewAction { showUserScore(scoreText) }
         }
     }
 
     private fun fetchFollowersCount(user: GithubUser) {
-        getView().showFollowersProgress()
+        performViewAction { showFollowersProgress() }
 
         disposables += usersRepository
                 .fetchFollowersCount(user.followersUrl)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnEvent { _, _ -> getView().hideFollowersProgress() }
+                .doOnEvent { _, _ -> performViewAction { hideFollowersProgress() } }
                 .subscribeBy(
                         onSuccess = ::onFollowersCountFetched,
                         onError = ::onError
@@ -80,14 +79,14 @@ class UserDetailsPresenter @Inject constructor(
 
     private fun showFollowersCount() {
         followersCount?.let {
-            getView().showFollowersCount(it.toString())
+            performViewAction { showFollowersCount(it.toString()) }
         }
     }
 
     private fun onError(throwable: Throwable) {
         if (errorHandler.isNonFatalError(throwable)) {
             val errorMessage = errorHandler.getMessageTextForNonFatalError(throwable)
-            getView().showError(errorMessage)
+            performViewAction { showError(errorMessage) }
         } else {
             throw throwable
         }

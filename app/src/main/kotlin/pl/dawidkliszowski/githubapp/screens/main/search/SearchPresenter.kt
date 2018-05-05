@@ -33,8 +33,6 @@ class SearchPresenter @Inject constructor(
         private val presenterStateHandler: SearchPresenterStateHandler
 ) : MvpPresenter<SearchUsersView, SearchNavigator>() {
 
-    override val nullView = SearchNullView
-
     private val searchQuerySubject = PublishSubject.create<String>()
     private val nextPageSubject = PublishSubject.create<Unit>()
     private val disposables = CompositeDisposable()
@@ -88,7 +86,7 @@ class SearchPresenter @Inject constructor(
 
     private fun showQurrentQuery() {
         currentQuery?.let {
-            getView().showSearchQuery(it)
+            performViewAction { showSearchQuery(it) }
         }
     }
 
@@ -105,17 +103,17 @@ class SearchPresenter @Inject constructor(
         val combinedResults = (usersUiItems + reposUiItems)
                 .sortedBy { searchUiItem -> searchUiItem.id }
 
-        getView().showSearchResults(combinedResults)
+        performViewAction { showSearchResults(combinedResults) }
 
         if (combinedResults.isEmpty()) {
-            getView().showEmptyPlaceholder()
+            performViewAction { showEmptyPlaceholder() }
         } else {
-            getView().hideEmptyPlaceholder()
+            performViewAction { hideEmptyPlaceholder() }
         }
     }
 
     private fun showErrorMessage(message: String) {
-        getView().showError(message)
+        performViewAction { showError(message) }
     }
 
     private fun subscribeToSubjects(): Disposable {
@@ -147,7 +145,7 @@ class SearchPresenter @Inject constructor(
         return nextPageSubject
                 .filter { currentQuery != null }
                 .map { currentQuery!! }
-                .doOnNext { getView().showPaginateProgress() }
+                .doOnNext { performViewAction { showPaginateProgress() } }
     }
 
     private fun <T> Observable<T>.showProgressAndClearList(): Observable<T> {
@@ -155,19 +153,17 @@ class SearchPresenter @Inject constructor(
                 .doOnNext {
                     searchUserResults.clear()
                     searchRepoResults.clear()
-                    getView().run {
-                        hideEmptyPlaceholder()
-                        showMainProgress()
-                        showSearchResults(emptyList())
-                    }
+                    performViewAction { hideEmptyPlaceholder() }
+                    performViewAction { showMainProgress() }
+                    performViewAction { showSearchResults(emptyList()) }
                 }
     }
 
     private fun <T> Observable<T>.hideProgressViews(): Observable<T> {
         return this.observeOn(AndroidSchedulers.mainThread())
                 .doOnEach {
-                    getView().hideMainProgress()
-                    getView().hidePaginateProgress()
+                    performViewAction { hideMainProgress() }
+                    performViewAction { hidePaginateProgress() }
                 }
     }
 
