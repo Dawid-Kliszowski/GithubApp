@@ -18,23 +18,11 @@ class UsersAdapter @Inject constructor(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var items: List<SearchUiItem> = emptyList()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
 
     var onUserItemClickListener: ((userId: Long, avatarImageView: View, usernameTextView: View, scoreTextView: View) -> Unit)? = null
     var onScrollToLastNonProgressItem: (() -> Unit)? = null
 
     var isNextPageProgressVisible: Boolean = false
-        set(value) {
-            field = value
-            currentRecyclerView?.post {
-                notifyDataSetChanged()
-            }
-        }
-
-    private var currentRecyclerView: RecyclerView? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -99,17 +87,6 @@ class UsersAdapter @Inject constructor(
                 onScrollToLastNonProgressItem?.invoke()
             }
         }
-    }
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        currentRecyclerView = recyclerView
-
-    }
-
-    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
-        currentRecyclerView = null
-        super.onDetachedFromRecyclerView(recyclerView)
     }
 
     private fun isLast(position: Int) = position == itemCount - 1

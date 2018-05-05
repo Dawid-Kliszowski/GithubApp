@@ -1,7 +1,7 @@
 package pl.dawidkliszowski.githubapp.data
 
-class UnknownRemoteRepositoryException : Exception("Unknown server error")
+object UnknownRemoteRepositoryException : Exception("Unknown server error")
 
-class RemoteRepositoryUnavailableException : Exception("Server connection error occurred.")
+object RemoteRepositoryUnavailableException : Exception("Server connection error occurred.")
 
-class RemoteRepositoryLimitsReachedException : Exception("Limit for unauthorized calls reached")
+object RemoteRepositoryLimitsReachedException : Exception("Limit for unauthorized calls reached")

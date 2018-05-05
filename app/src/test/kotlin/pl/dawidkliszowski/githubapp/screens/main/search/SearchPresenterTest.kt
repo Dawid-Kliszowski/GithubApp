@@ -95,7 +95,7 @@ class SearchPresenterTest : BaseTest() {
     @Test
     fun `hides progress after non fatal error when fetching users`() {
         whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException))
 
         searchPresenter.queryTextChanged(testQuery)
         advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
@@ -105,7 +105,7 @@ class SearchPresenterTest : BaseTest() {
     @Test
     fun `shows error message after non fatal error when fetching users`() {
         whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException))
 
         searchPresenter.queryTextChanged(testQuery)
         advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)

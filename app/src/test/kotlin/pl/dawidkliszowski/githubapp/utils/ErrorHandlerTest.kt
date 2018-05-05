@@ -35,19 +35,19 @@ class ErrorHandlerTest {
 
     @Test
     fun `returns proper error message for server unavailable error`() {
-        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(RemoteRepositoryUnavailableException())
+        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(RemoteRepositoryUnavailableException)
         assertEquals(ERROR_SERVER_UNAVAILABLE, serverErrorMessage)
     }
 
     @Test
     fun `returns proper error message for unknown server error`() {
-        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(UnknownRemoteRepositoryException())
+        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(UnknownRemoteRepositoryException)
         assertEquals(UNKNOWN_SERVER_ERROR, serverErrorMessage)
     }
 
     @Test
     fun `returns proper error message for server limits reached error`() {
-        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(RemoteRepositoryLimitsReachedException())
+        val serverErrorMessage = errorHandler.getMessageTextForNonFatalError(RemoteRepositoryLimitsReachedException)
         assertEquals(ERROR_SERVER_LIMITS_REACHED, serverErrorMessage)
     }
 

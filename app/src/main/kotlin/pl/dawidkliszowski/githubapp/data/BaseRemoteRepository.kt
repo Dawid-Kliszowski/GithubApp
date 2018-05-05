@@ -22,7 +22,7 @@ abstract class BaseRemoteRepository<M, A: ApiResponseModel> {
         } else {
             val page = calculateNextPage(fromItem)
             queryItems(query, page, REQUEST_ITEMS_PER_PAGE)
-                    .map{ response -> extractQueryResponse(response) }
+                    .map { response -> extractQueryResponse(response) }
                     .map(::mapToDomainModel)
                     .onErrorResumeNext { throwCustomException(it) }
                     .subscribeOn(Schedulers.io())
@@ -34,15 +34,15 @@ abstract class BaseRemoteRepository<M, A: ApiResponseModel> {
             response.body()!!
         } else {
             throw when (response.code()) {
-                HttpURLConnection.HTTP_FORBIDDEN -> RemoteRepositoryLimitsReachedException()
-                else -> UnknownRemoteRepositoryException()
+                HttpURLConnection.HTTP_FORBIDDEN -> RemoteRepositoryLimitsReachedException
+                else -> UnknownRemoteRepositoryException
             }
         }
     }
 
     protected fun <T> throwCustomException(throwable: Throwable): Single<T> {
         return if (throwable.isNetworkException) {
-            Single.error(RemoteRepositoryUnavailableException())
+            Single.error(RemoteRepositoryUnavailableException)
         } else {
             Single.error(throwable)
         }

@@ -83,7 +83,7 @@ class UserDetailsPresenterTest : BaseTest() {
     @Test
     fun `hides progress after non fatal error when fetching followers count`() {
         whenever(usersRepositoryMock.fetchFollowersCount(any()))
-                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException))
 
         userDetailsPresenter.initWithUser(testUser)
         verify(viewMock).hideFollowersProgress()
@@ -92,7 +92,7 @@ class UserDetailsPresenterTest : BaseTest() {
     @Test
     fun `shows error message after non fatal error when fetching followers count`() {
         whenever(usersRepositoryMock.fetchFollowersCount(any()))
-                .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
+                .thenReturn(Single.error(RemoteRepositoryUnavailableException))
 
         userDetailsPresenter.initWithUser(testUser)
         verify(viewMock).showError(any())

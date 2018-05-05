@@ -3,6 +3,8 @@ package pl.dawidkliszowski.githubapp.screens.main.search
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE
 import android.view.Menu
 import pl.dawidkliszowski.githubapp.R
 import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpFragment
@@ -115,10 +117,6 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
         contentLoadingProgressBar.visibility = GONE
     }
 
-    override fun showSearchResults(results: List<SearchUiItem>) {
-        usersAdapter.items = results
-    }
-
     override fun showEmptyPlaceholder() {
         emptyPlaceholderTextView.visibility = VISIBLE
     }
@@ -127,12 +125,29 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
         emptyPlaceholderTextView.visibility = INVISIBLE
     }
 
+    override fun showSearchResults(results: List<SearchUiItem>) {
+        usersAdapter.items = results
+        notifyAdapter()
+    }
+
     override fun showPaginateProgress() {
         usersAdapter.isNextPageProgressVisible = true
+        notifyAdapter()
     }
 
     override fun hidePaginateProgress() {
         usersAdapter.isNextPageProgressVisible = false
+        notifyAdapter()
+    }
+
+    private fun notifyAdapter() {
+        if (usersRecyclerView.isComputingLayout) {
+            usersRecyclerView.post {
+                notifyAdapter()
+            }
+        } else {
+            usersAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun showSearchQuery(query: String) {
