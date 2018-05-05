@@ -71,6 +71,7 @@ class SearchPresenter @Inject constructor(
 
     override fun onDestroy() {
         disposables.clear()
+        super.onDestroy()
     }
 
     private fun onNextPageQueryResult(result: CombinedQueryResult) {

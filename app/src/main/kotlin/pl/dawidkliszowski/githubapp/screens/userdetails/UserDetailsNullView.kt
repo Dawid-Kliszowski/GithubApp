@@ -9,4 +9,10 @@ object UserDetailsNullView : UserDetailsView {
     override fun showUserScore(score: String) { /* no-op */ }
 
     override fun showFollowersCount(count: String) { /* no-op */ }
+
+    override fun showFollowersProgress() { /* no-op */ }
+
+    override fun hideFollowersProgress() { /* no-op */ }
+
+    override fun showError(message: String) { /* no-op */ }
 }

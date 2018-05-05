@@ -67,4 +67,14 @@
         app:layout_constraintTop_toTopOf="@id/followersLabelTextView"
         tools:text="0"/>
 
+    <ProgressBar
+        android:id="@+id/followersProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_marginStart="@dimen/margin_small"
+        app:layout_constraintStart_toEndOf="@id/followersLabelTextView"
+        app:layout_constraintTop_toTopOf="@id/followersLabelTextView"
+        android:visibility="gone"/>
+
 </android.support.constraint.ConstraintLayout>

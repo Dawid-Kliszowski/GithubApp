@@ -12,9 +12,11 @@ import pl.dawidkliszowski.githubapp.model.parcel.GithubUserParcel
 import pl.dawidkliszowski.githubapp.mvp.MvpActivity
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import android.support.v4.util.Pair
+import android.view.View.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_details.*
 import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
+import pl.dawidkliszowski.githubapp.utils.showToast
 import javax.inject.Inject
 
 private const val BUNDLE_KEY_USER = BuildConfig.APPLICATION_ID + ".bundle_key_user"
@@ -88,6 +90,18 @@ class UserDetailsActivity : MvpActivity<UserDetailsView, UserDetailsNavigator, U
 
     override fun showFollowersCount(count: String) {
         followersTextView.text = count
+    }
+
+    override fun showFollowersProgress() {
+        followersProgressBar.visibility = VISIBLE
+    }
+
+    override fun hideFollowersProgress() {
+        followersProgressBar.visibility = GONE
+    }
+
+    override fun showError(message: String) {
+        showToast(message)
     }
 }
 

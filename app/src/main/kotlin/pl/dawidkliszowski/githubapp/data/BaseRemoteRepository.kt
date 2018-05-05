@@ -10,26 +10,26 @@ import java.net.HttpURLConnection
 private const val REQUEST_ITEMS_PER_PAGE = 30
 private const val API_PAGE_OFFSET = 1 //API pages start from 1 instead of 0
 
-abstract class BaseRemoteRepository<T, A: ApiResponseModel> {
+abstract class BaseRemoteRepository<M, A: ApiResponseModel> {
 
     protected abstract fun queryItems(queryText: String, page: Int, perPage: Int): Single<Response<A>>
 
-    protected abstract fun mapToDomainModel(apiResponse: A): List<T>
+    protected abstract fun mapToDomainModel(apiResponse: A): List<M>
 
-    fun query(query: String, fromItem: Int): Single<List<T>> {
+    fun query(query: String, fromItem: Int): Single<List<M>> {
         return if (query.isBlank() || !canLoadNextPage(fromItem)) {
             Single.just(emptyList())
         } else {
             val page = calculateNextPage(fromItem)
             queryItems(query, page, REQUEST_ITEMS_PER_PAGE)
-                    .map(::extractQueryResponse)
+                    .map{ response -> extractQueryResponse(response) }
                     .map(::mapToDomainModel)
                     .onErrorResumeNext { throwCustomException(it) }
                     .subscribeOn(Schedulers.io())
         }
     }
 
-    private fun extractQueryResponse(response: Response<A>): A {
+    protected fun <T> extractQueryResponse(response: Response<T>): T {
         return if (response.isSuccessful) {
             response.body()!!
         } else {
@@ -40,7 +40,7 @@ abstract class BaseRemoteRepository<T, A: ApiResponseModel> {
         }
     }
 
-    private fun <T> throwCustomException(throwable: Throwable): Single<T> {
+    protected fun <T> throwCustomException(throwable: Throwable): Single<T> {
         return if (throwable.isNetworkException) {
             Single.error(RemoteRepositoryUnavailableException())
         } else {

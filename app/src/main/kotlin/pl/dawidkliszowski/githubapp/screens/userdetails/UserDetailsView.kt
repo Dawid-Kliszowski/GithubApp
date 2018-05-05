@@ -11,4 +11,10 @@ interface UserDetailsView : MvpView {
     fun showUserScore(score: String)
 
     fun showFollowersCount(count: String)
+
+    fun showFollowersProgress()
+
+    fun hideFollowersProgress()
+
+    fun showError(message: String)
 }

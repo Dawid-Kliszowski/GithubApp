@@ -1,27 +1,34 @@
 package pl.dawidkliszowski.githubapp.mvp
 
+import android.support.annotation.CallSuper
+
 abstract class MvpPresenter<V : MvpView, N : MvpNavigator> {
 
     protected abstract val nullView: V
     private var view: V? = null
     private var navigator: N? = null
 
-    fun attachView(view: V) {
+    @CallSuper
+    open fun attachView(view: V) {
         this.view = view
     }
 
-    fun detachView() {
+    @CallSuper
+    open fun detachView() {
         this.view = null
     }
 
-    fun attachNavigator(navigator: N) {
+    @CallSuper
+    open fun attachNavigator(navigator: N) {
         this.navigator = navigator
     }
 
-    fun detachNavigator() {
+    @CallSuper
+    open fun detachNavigator() {
         this.navigator = null
     }
 
+    @CallSuper
     open fun onDestroy() {
         //no-op
         //prepared to override in particular presenter implementations
