@@ -19,4 +19,6 @@ object SearchNullView : SearchUsersView {
     override fun showPaginateProgress() { /* no-op */ }
 
     override fun hidePaginateProgress() { /* no-op */ }
+
+    override fun showSearchQuery(query: String) { /* no-op */ }
 }

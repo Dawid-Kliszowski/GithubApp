@@ -64,8 +64,8 @@ class UserDetailsActivity : MvpActivity<UserDetailsView, UserDetailsNavigator, U
         activityComponent.inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onInitPresenter() {
+        super.onInitPresenter()
         initPresenterWithUser()
     }
 

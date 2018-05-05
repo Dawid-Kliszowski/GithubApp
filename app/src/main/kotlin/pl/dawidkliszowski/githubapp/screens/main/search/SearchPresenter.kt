@@ -1,5 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
+import android.os.Parcelable
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,7 +29,8 @@ class SearchPresenter @Inject constructor(
         private val reposRepository: GithubReposRepository,
         private val usersUiItemsMapper: UsersUiItemsMapper,
         private val reposUiItemsMapper: ReposUiItemsMapper,
-        private val errorHandler: ErrorHandler
+        private val errorHandler: ErrorHandler,
+        private val presenterStateHandler: SearchPresenterStateHandler
 ) : MvpPresenter<SearchUsersView, SearchNavigator>() {
 
     override val nullView = SearchNullView
@@ -69,9 +71,25 @@ class SearchPresenter @Inject constructor(
         }
     }
 
+    override fun attachView(view: SearchUsersView) {
+        super.attachView(view)
+        restoreViewState()
+    }
+
     override fun onDestroy() {
         disposables.clear()
         super.onDestroy()
+    }
+
+    private fun restoreViewState() {
+        showSearchResults()
+        showQurrentQuery()
+    }
+
+    private fun showQurrentQuery() {
+        currentQuery?.let {
+            getView().showSearchQuery(it)
+        }
     }
 
     private fun onNextPageQueryResult(result: CombinedQueryResult) {
@@ -171,6 +189,19 @@ class SearchPresenter @Inject constructor(
                 ).map { (users, repos) ->
                     CombinedQueryResult(users, repos)
                 }.firstOrError()
+    }
+
+    override fun saveState(): Parcelable? {
+        return presenterStateHandler.saveState(searchUserResults, searchRepoResults, currentQuery)
+    }
+
+    override fun restoreState(parcel: Parcelable?) {
+        parcel?.let {
+            val state = presenterStateHandler.restoreState(it)
+            searchUserResults = state.searchUserResults.toMutableList()
+            searchRepoResults = state.searchRepoResults.toMutableList()
+            currentQuery = state.currentQuery
+        }
     }
 }
 

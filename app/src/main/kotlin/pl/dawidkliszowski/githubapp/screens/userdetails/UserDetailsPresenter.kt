@@ -1,9 +1,11 @@
 package pl.dawidkliszowski.githubapp.screens.userdetails
 
+import android.os.Parcelable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
+import kotlinx.android.parcel.Parcelize
 import pl.dawidkliszowski.githubapp.data.UsersRepository
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
 import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
@@ -18,32 +20,47 @@ class UserDetailsPresenter @Inject constructor(
 
     override val nullView = UserDetailsNullView
     private val disposables = CompositeDisposable()
-
-    private lateinit var user: GithubUser
+    private var user: GithubUser? = null
     private var followersCount: Int? = null
 
     fun initWithUser(user: GithubUser) {
         this.user = user
+        showViewState()
+        fetchFollowersCount(user)
+    }
+
+    override fun attachView(view: UserDetailsView) {
+        super.attachView(view)
+        showViewState()
+    }
+
+    private fun showViewState() {
         showAvatar()
         showUsername()
         showScore()
-        fetchFollowersCount()
+        showFollowersCount()
     }
 
     private fun showAvatar() {
-        user.avatarUrl?.let { getView().showAvatar(it) }
+        user?.avatarUrl?.let {
+            getView().showAvatar(it)
+        }
     }
 
     private fun showUsername() {
-        getView().showUsername(user.login)
+        user?.let {
+            getView().showUsername(it.login)
+        }
     }
 
     private fun showScore() {
-        val scoreText = user.score.format(2)
-        getView().showUserScore(scoreText)
+        user?.let {
+            val scoreText = it.score.format(2)
+            getView().showUserScore(scoreText)
+        }
     }
 
-    private fun fetchFollowersCount() {
+    private fun fetchFollowersCount(user: GithubUser) {
         getView().showFollowersProgress()
 
         disposables += usersRepository
@@ -58,7 +75,13 @@ class UserDetailsPresenter @Inject constructor(
 
     private fun onFollowersCountFetched(count: Int) {
         followersCount = count
-        getView().showFollowersCount(count.toString())
+        showFollowersCount()
+    }
+
+    private fun showFollowersCount() {
+        followersCount?.let {
+            getView().showFollowersCount(it.toString())
+        }
     }
 
     private fun onError(throwable: Throwable) {
@@ -74,4 +97,19 @@ class UserDetailsPresenter @Inject constructor(
         disposables.clear()
         super.onDestroy()
     }
+
+    override fun saveState(): Parcelable? {
+        return UserDetailsPresenterState(followersCount)
+    }
+
+    override fun restoreState(parcel: Parcelable?) {
+        parcel?.let {
+            followersCount = (it as UserDetailsPresenterState).followersCount
+        }
+    }
 }
+
+@Parcelize
+class UserDetailsPresenterState(
+        val followersCount: Int?
+) : Parcelable

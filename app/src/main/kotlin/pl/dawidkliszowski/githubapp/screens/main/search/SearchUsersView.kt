@@ -20,4 +20,6 @@ interface SearchUsersView : MvpView {
     fun showEmptyPlaceholder()
 
     fun hideEmptyPlaceholder()
+
+    fun showSearchQuery(query: String)
 }

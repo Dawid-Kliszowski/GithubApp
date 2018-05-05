@@ -30,6 +30,7 @@ class SearchPresenterTest : BaseTest() {
     @Mock lateinit var usersRepositoryMock: UsersRepository
     @Mock lateinit var reposRepositoryMock: GithubReposRepository
     @Mock lateinit var stringProvider: StringProvider
+    @Mock lateinit var stateHandlerMock: SearchPresenterStateHandler
     @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
     @Spy lateinit var reposUiItemsMapper: ReposUiItemsMapper
     @InjectMocks lateinit var errorHandler: ErrorHandler
@@ -55,7 +56,8 @@ class SearchPresenterTest : BaseTest() {
                 reposRepositoryMock,
                 usersUiItemsMapper,
                 reposUiItemsMapper,
-                errorHandler
+                errorHandler,
+                stateHandlerMock
         )
         whenever(stringProvider.getString(any()))
                 .thenReturn("")
@@ -131,14 +133,7 @@ class SearchPresenterTest : BaseTest() {
 
         searchPresenter.queryTextChanged(testQuery)
         advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        verify(viewMock).showEmptyPlaceholder()
-    }
-
-    @Test
-    fun `not shows empty placeholder on non-empty result when fetching users`() {
-        searchPresenter.queryTextChanged(testQuery)
-        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
-        verify(viewMock, never()).showEmptyPlaceholder()
+        verify(viewMock, times(2)).showEmptyPlaceholder()
     }
 
     @Test

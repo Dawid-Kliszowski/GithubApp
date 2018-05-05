@@ -22,6 +22,12 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
     @LayoutRes override val layoutResId = R.layout.fragment_search
 
     @Inject lateinit var usersAdapter: UsersAdapter
+    private var toolbarSearchView: SearchView? = null
+        set(value) {
+            field = value
+            field?.let { postToolbarSearchViewAction?.invoke() }
+        }
+    private var postToolbarSearchViewAction: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +43,7 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_search_users, menu)
-        super.onCreateOptionsMenu(menu,inflater)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -51,16 +57,22 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
         setupRecyclerView()
     }
 
+    override fun onDestroyView() {
+        toolbarSearchView = null
+        super.onDestroyView()
+    }
+
     override fun injectDependencies() {
         fragmentComponent.inject(this)
     }
 
-    private fun setupSearchView(usersSearchView: SearchView) {
-        usersSearchView.apply {
+    private fun setupSearchView(toolbarSearchView: SearchView) {
+        this.toolbarSearchView = toolbarSearchView
+        toolbarSearchView.apply {
             setIconifiedByDefault(false)
             queryHint = getString(R.string.menu_search_users_hint)
-            setOnQueryTextListener( object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String): Boolean =  true
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String): Boolean = true
 
                 override fun onQueryTextChange(newText: String): Boolean {
                     presenter.queryTextChanged(newText)
@@ -121,5 +133,13 @@ class SearchFragment : MvpFragment<SearchUsersView, SearchNavigator, SearchPrese
 
     override fun hidePaginateProgress() {
         usersAdapter.isNextPageProgressVisible = false
+    }
+
+    override fun showSearchQuery(query: String) {
+        if (toolbarSearchView != null) {
+            toolbarSearchView!!.setQuery(query, false)
+        } else {
+            postToolbarSearchViewAction = { toolbarSearchView?.setQuery(query, false) }
+        }
     }
 }
