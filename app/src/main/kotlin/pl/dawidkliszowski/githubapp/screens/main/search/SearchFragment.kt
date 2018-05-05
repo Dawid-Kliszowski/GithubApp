@@ -5,13 +5,13 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.mvp.MvpFragment
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpFragment
 import android.support.v7.widget.SearchView
 import android.view.MenuInflater
 import android.view.View
 import android.view.View.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
+import pl.dawidkliszowski.githubapp.screens.model.ui.SearchUiItem
 import pl.dawidkliszowski.githubapp.screens.main.search.adapter.UsersAdapter
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import pl.dawidkliszowski.githubapp.utils.showToast

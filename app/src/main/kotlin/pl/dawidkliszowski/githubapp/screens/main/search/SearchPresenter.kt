@@ -12,11 +12,11 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import pl.dawidkliszowski.githubapp.data.GithubReposRepository
 import pl.dawidkliszowski.githubapp.data.UsersRepository
-import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.model.mappers.ReposUiItemsMapper
-import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
-import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
+import pl.dawidkliszowski.githubapp.data.model.GithubRepo
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.screens.model.mappers.ReposUiItemsMapper
+import pl.dawidkliszowski.githubapp.screens.model.mappers.UsersUiItemsMapper
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpPresenter
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import java.util.concurrent.TimeUnit

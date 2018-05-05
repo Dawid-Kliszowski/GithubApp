@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import pl.dawidkliszowski.githubapp.BaseTest
 import pl.dawidkliszowski.githubapp.data.RemoteRepositoryUnavailableException
 import pl.dawidkliszowski.githubapp.data.UsersRepository
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
 

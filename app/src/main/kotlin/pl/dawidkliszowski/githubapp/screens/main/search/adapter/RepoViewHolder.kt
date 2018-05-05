@@ -5,9 +5,9 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.recyclerview_item_repo.view.*
+import kotlinx.android.synthetic.main.recycler_view_item_repo.view.*
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
+import pl.dawidkliszowski.githubapp.screens.model.ui.SearchUiItem
 
 class RepoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

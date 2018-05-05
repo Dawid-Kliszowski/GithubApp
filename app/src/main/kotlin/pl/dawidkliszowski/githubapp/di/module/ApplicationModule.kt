@@ -9,14 +9,14 @@ import com.squareup.picasso.Picasso
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import pl.dawidkliszowski.githubapp.api.ApiConstants
-import pl.dawidkliszowski.githubapp.api.UsersApiService
+import pl.dawidkliszowski.githubapp.data.api.ApiConstants
+import pl.dawidkliszowski.githubapp.data.api.UsersApiService
 import pl.dawidkliszowski.githubapp.di.qualifier.AppContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
-import pl.dawidkliszowski.githubapp.api.ReposApiService
+import pl.dawidkliszowski.githubapp.data.api.ReposApiService
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 
 @Module

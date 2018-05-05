@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.recycler_view_item_user.view.*
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
+import pl.dawidkliszowski.githubapp.screens.model.ui.SearchUiItem
 
 class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

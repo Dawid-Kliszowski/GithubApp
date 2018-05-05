@@ -2,7 +2,7 @@ package pl.dawidkliszowski.githubapp.data
 
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import pl.dawidkliszowski.githubapp.model.ApiResponseModel
+import pl.dawidkliszowski.githubapp.data.api.model.ApiResponseModel
 import retrofit2.Response
 import java.io.IOException
 import java.net.HttpURLConnection

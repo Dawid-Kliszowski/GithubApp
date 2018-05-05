@@ -1,6 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.userdetails
 
-import pl.dawidkliszowski.githubapp.mvp.MvpView
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpView
 
 interface UserDetailsView : MvpView {
 

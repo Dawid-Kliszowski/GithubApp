@@ -2,12 +2,12 @@ package pl.dawidkliszowski.githubapp.screens.main.search
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.model.mappers.ReposParcelMapper
-import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
-import pl.dawidkliszowski.githubapp.model.parcel.GithubRepoParcel
-import pl.dawidkliszowski.githubapp.model.parcel.GithubUserParcel
+import pl.dawidkliszowski.githubapp.data.model.GithubRepo
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.data.mappers.ReposParcelMapper
+import pl.dawidkliszowski.githubapp.data.mappers.UserParcelMapper
+import pl.dawidkliszowski.githubapp.screens.model.parcel.GithubRepoParcel
+import pl.dawidkliszowski.githubapp.screens.model.parcel.GithubUserParcel
 import javax.inject.Inject
 
 class SearchPresenterStateHandler @Inject constructor(

@@ -8,14 +8,14 @@ import android.support.v4.app.ActivityOptionsCompat
 import android.view.View
 import pl.dawidkliszowski.githubapp.BuildConfig
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.parcel.GithubUserParcel
-import pl.dawidkliszowski.githubapp.mvp.MvpActivity
+import pl.dawidkliszowski.githubapp.screens.model.parcel.GithubUserParcel
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpActivity
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
 import android.support.v4.util.Pair
 import android.view.View.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_user_details.*
-import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
+import pl.dawidkliszowski.githubapp.data.mappers.UserParcelMapper
 import pl.dawidkliszowski.githubapp.utils.showToast
 import javax.inject.Inject
 

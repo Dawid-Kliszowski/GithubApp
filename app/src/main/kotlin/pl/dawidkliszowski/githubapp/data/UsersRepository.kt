@@ -2,10 +2,10 @@ package pl.dawidkliszowski.githubapp.data
 
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import pl.dawidkliszowski.githubapp.api.UsersApiService
-import pl.dawidkliszowski.githubapp.model.api.SearchUsersResponse
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.model.mappers.UsersApiResponseMapper
+import pl.dawidkliszowski.githubapp.data.api.UsersApiService
+import pl.dawidkliszowski.githubapp.data.api.model.SearchUsersResponse
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.data.mappers.UsersApiResponseMapper
 import retrofit2.Response
 import javax.inject.Inject
 

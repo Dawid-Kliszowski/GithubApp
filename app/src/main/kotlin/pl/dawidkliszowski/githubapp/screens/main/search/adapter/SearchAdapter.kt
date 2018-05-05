@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.picasso.Picasso
 import pl.dawidkliszowski.githubapp.R
-import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
+import pl.dawidkliszowski.githubapp.screens.model.ui.SearchUiItem
 import javax.inject.Inject
 
 private const val VIEW_TYPE_USER = 1
@@ -58,7 +58,7 @@ class UsersAdapter @Inject constructor(
     }
 
     private fun createRepoViewHolder(inflater: LayoutInflater, parent: ViewGroup): RepoViewHolder {
-        val view = inflater.inflate(R.layout.recyclerview_item_repo, parent, false)
+        val view = inflater.inflate(R.layout.recycler_view_item_repo, parent, false)
         return RepoViewHolder(view)
     }
 

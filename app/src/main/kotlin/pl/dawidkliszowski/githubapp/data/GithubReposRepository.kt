@@ -1,10 +1,10 @@
 package pl.dawidkliszowski.githubapp.data
 
 import io.reactivex.Single
-import pl.dawidkliszowski.githubapp.api.ReposApiService
-import pl.dawidkliszowski.githubapp.model.api.SearchReposApiResponse
-import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
-import pl.dawidkliszowski.githubapp.model.mappers.ReposApiResponseMapper
+import pl.dawidkliszowski.githubapp.data.api.ReposApiService
+import pl.dawidkliszowski.githubapp.data.api.model.SearchReposApiResponse
+import pl.dawidkliszowski.githubapp.data.model.GithubRepo
+import pl.dawidkliszowski.githubapp.data.mappers.ReposApiResponseMapper
 import retrofit2.Response
 import javax.inject.Inject
 

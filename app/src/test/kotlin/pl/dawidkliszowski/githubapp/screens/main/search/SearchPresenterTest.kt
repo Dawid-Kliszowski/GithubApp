@@ -12,10 +12,10 @@ import pl.dawidkliszowski.githubapp.BaseTest
 import pl.dawidkliszowski.githubapp.data.GithubReposRepository
 import pl.dawidkliszowski.githubapp.data.RemoteRepositoryUnavailableException
 import pl.dawidkliszowski.githubapp.data.UsersRepository
-import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.model.mappers.ReposUiItemsMapper
-import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
+import pl.dawidkliszowski.githubapp.data.model.GithubRepo
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.screens.model.mappers.ReposUiItemsMapper
+import pl.dawidkliszowski.githubapp.screens.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper

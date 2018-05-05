@@ -1,6 +1,6 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
-import pl.dawidkliszowski.githubapp.model.ui.SearchUiItem
+import pl.dawidkliszowski.githubapp.screens.model.ui.SearchUiItem
 
 object SearchNullView : SearchUsersView {
 

@@ -7,8 +7,8 @@ import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.parcel.Parcelize
 import pl.dawidkliszowski.githubapp.data.UsersRepository
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.mvp.MvpPresenter
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpPresenter
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.format
 import javax.inject.Inject

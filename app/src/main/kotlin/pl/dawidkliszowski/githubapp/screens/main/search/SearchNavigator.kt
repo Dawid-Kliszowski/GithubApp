@@ -1,9 +1,9 @@
 package pl.dawidkliszowski.githubapp.screens.main.search
 
 import android.app.Activity
-import pl.dawidkliszowski.githubapp.model.domain.GithubUser
-import pl.dawidkliszowski.githubapp.model.mappers.UserParcelMapper
-import pl.dawidkliszowski.githubapp.mvp.MvpNavigator
+import pl.dawidkliszowski.githubapp.data.model.GithubUser
+import pl.dawidkliszowski.githubapp.data.mappers.UserParcelMapper
+import pl.dawidkliszowski.githubapp.screens.base.mvp.MvpNavigator
 import pl.dawidkliszowski.githubapp.screens.userdetails.StartUserActivityRequest
 import pl.dawidkliszowski.githubapp.screens.userdetails.UserDetailsActivity
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
