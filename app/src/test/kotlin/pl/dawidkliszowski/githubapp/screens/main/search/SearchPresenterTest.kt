@@ -8,42 +8,30 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import pl.dawidkliszowski.githubapp.RxTestSchedulersInitializer
+import pl.dawidkliszowski.githubapp.BaseTest
+import pl.dawidkliszowski.githubapp.data.GithubReposRepository
 import pl.dawidkliszowski.githubapp.data.RemoteRepositoryUnavailableException
 import pl.dawidkliszowski.githubapp.data.UsersRepository
+import pl.dawidkliszowski.githubapp.model.domain.GithubRepo
 import pl.dawidkliszowski.githubapp.model.domain.GithubUser
+import pl.dawidkliszowski.githubapp.model.mappers.ReposUiItemsMapper
 import pl.dawidkliszowski.githubapp.model.mappers.UsersUiItemsMapper
 import pl.dawidkliszowski.githubapp.utils.ErrorHandler
 import pl.dawidkliszowski.githubapp.utils.StringProvider
 import pl.dawidkliszowski.githubapp.utils.ViewWrapper
-import java.util.concurrent.TimeUnit
 
 private const val SEARCH_QUERY_DEBOUNCE_TIME_MILLIS = 1000L
 
 @RunWith(MockitoJUnitRunner::class)
-class SearchPresenterTest {
-
-    companion object {
-        val testSchedulersInitializer = RxTestSchedulersInitializer()
-
-        @BeforeClass
-        @JvmStatic
-        fun setUpClass() {
-            testSchedulersInitializer.initTestSchedulers()
-        }
-
-        @AfterClass
-        @JvmStatic
-        fun finishClass() {
-            testSchedulersInitializer.reset()
-        }
-    }
+class SearchPresenterTest : BaseTest() {
 
     @Mock lateinit var viewMock: SearchUsersView
     @Mock lateinit var navigatorMock: SearchNavigator
     @Mock lateinit var usersRepositoryMock: UsersRepository
+    @Mock lateinit var reposRepositoryMock: GithubReposRepository
     @Mock lateinit var stringProvider: StringProvider
     @Spy lateinit var usersUiItemsMapper: UsersUiItemsMapper
+    @Spy lateinit var reposUiItemsMapper: ReposUiItemsMapper
     @InjectMocks lateinit var errorHandler: ErrorHandler
 
     private lateinit var searchPresenter: SearchPresenter
@@ -53,16 +41,28 @@ class SearchPresenterTest {
             GithubUser(id = 1, login = "bbb", avatarUrl = null, score = 0.2, followersUrl = ""),
             GithubUser(id = 2, login = "ccc", avatarUrl = null, score = 0.3, followersUrl = "")
     )
+    private val testSearchReposResult = listOf(
+            GithubRepo(id = 0, name = "aaa", description = "aaa", ownerAvatarUrl = "", ownerName = "a"),
+            GithubRepo(id = 1, name = "bbb", description = "bbb", ownerAvatarUrl = "", ownerName = "b"),
+            GithubRepo(id = 2, name = "ccc", description = "ccc", ownerAvatarUrl = "", ownerName = "c")
+    )
     private val testQuery = "abc"
 
     @Before
     fun setUp() {
         searchPresenter = SearchPresenter(
                 usersRepositoryMock,
+                reposRepositoryMock,
                 usersUiItemsMapper,
+                reposUiItemsMapper,
                 errorHandler
         )
-        whenever(stringProvider.getString(any())).thenReturn("")
+        whenever(stringProvider.getString(any()))
+                .thenReturn("")
+        whenever(usersRepositoryMock.query(any(), any()))
+                .thenReturn(Single.just(testSearchUsersResult))
+        whenever(reposRepositoryMock.query(any(), any()))
+                .thenReturn(Single.just(testSearchReposResult))
         searchPresenter.attachNavigator(navigatorMock)
         searchPresenter.attachView(viewMock)
     }
@@ -76,23 +76,17 @@ class SearchPresenterTest {
 
     @Test
     fun `shows progress after one second debounce`() {
-        whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.just(emptyList()))
-
         searchPresenter.queryTextChanged(testQuery)
 
         verify(viewMock, never()).showMainProgress()
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showMainProgress()
     }
 
     @Test
     fun `hides progress after users fetched with success`() {
-        whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.just(emptyList()))
-
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideMainProgress()
     }
 
@@ -102,7 +96,7 @@ class SearchPresenterTest {
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideMainProgress()
     }
 
@@ -112,7 +106,7 @@ class SearchPresenterTest {
                 .thenReturn(Single.error(RemoteRepositoryUnavailableException()))
 
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showError(any())
     }
 
@@ -120,9 +114,11 @@ class SearchPresenterTest {
     fun `hides empty placeholder when start searching users`() {
         whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
+        whenever(reposRepositoryMock.query(any(), any()))
+                .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).hideEmptyPlaceholder()
     }
 
@@ -130,32 +126,29 @@ class SearchPresenterTest {
     fun `shows empty placeholder on empty result when fetching users`() {
         whenever(usersRepositoryMock.query(any(), any()))
                 .thenReturn(Single.just(emptyList()))
+        whenever(reposRepositoryMock.query(any(), any()))
+                .thenReturn(Single.just(emptyList()))
 
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock).showEmptyPlaceholder()
     }
 
     @Test
     fun `not shows empty placeholder on non-empty result when fetching users`() {
-        whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.just(testSearchUsersResult))
-
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         verify(viewMock, never()).showEmptyPlaceholder()
     }
 
     @Test
     fun `navigates to proper user details when selected item`() {
-        whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.just(testSearchUsersResult))
         val avatarImageViewWrapperMock = mock<ViewWrapper>()
         val usernameTextViewWrapperMock = mock<ViewWrapper>()
         val scoreTextViewWrapperMock = mock<ViewWrapper>()
 
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
 
         searchPresenter.userSelected(
                 testSearchUsersResult[0].id,
@@ -174,18 +167,10 @@ class SearchPresenterTest {
 
     @Test
     fun `shows and hides paginate progress when paginating`() {
-        whenever(usersRepositoryMock.query(any(), any()))
-                .thenReturn(Single.just(emptyList()))
-
         searchPresenter.queryTextChanged(testQuery)
-        advanceTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
+        advanceRxTime(SEARCH_QUERY_DEBOUNCE_TIME_MILLIS)
         searchPresenter.nextPageRequest()
         verify(viewMock).showPaginateProgress()
         verify(viewMock, atLeastOnce()).hidePaginateProgress()
-    }
-
-    private fun advanceTime(timeMillis: Long) {
-        testSchedulersInitializer.testScheduler
-                .advanceTimeBy(timeMillis, TimeUnit.MILLISECONDS)
     }
 }

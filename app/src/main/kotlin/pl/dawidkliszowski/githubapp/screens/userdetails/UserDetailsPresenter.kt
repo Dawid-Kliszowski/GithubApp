@@ -47,7 +47,7 @@ class UserDetailsPresenter @Inject constructor(
         getView().showFollowersProgress()
 
         disposables += usersRepository
-                .getFollowersCount(user.followersUrl)
+                .fetchFollowersCount(user.followersUrl)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnEvent { _, _ -> getView().hideFollowersProgress() }
                 .subscribeBy(

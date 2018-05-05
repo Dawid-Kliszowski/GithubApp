@@ -22,7 +22,7 @@ class UsersRepository @Inject constructor(
         return usersApiResponseMapper.mapApiResponseToDomainUsers(apiResponse)
     }
 
-    fun getFollowersCount(fullUrl: String): Single<Int> {
+    fun fetchFollowersCount(fullUrl: String): Single<Int> {
         return usersApiService
                 .getFollowers(fullUrl)
                 .map{ response -> extractQueryResponse(response) }
